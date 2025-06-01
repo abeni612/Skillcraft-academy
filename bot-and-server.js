@@ -7,6 +7,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const { v4: uuidv4 } = require('uuid');
 const fs          = require('fs-extra');
 const nodemailer  = require('nodemailer');
+const fetch       = require('node-fetch');  // <-- node-fetch v2 (CommonJS)
 
 //////////////////////////////////////
 // ─── CONFIGURATION ────────────────────────────────────────────────────────────
@@ -99,7 +100,7 @@ app.post('/validate-code', (req, res) => {
 });
 
 /**
- * POST /api/chat
+ * POST /api-chat
  *   Input: { message: "...", subject: "Web Design & Development" }
  *   Response: { reply: "AI's answer..." }
  * Only premium users (dashboard UI) should call this.
@@ -111,7 +112,6 @@ app.post('/api-chat', async (req, res) => {
   }
 
   try {
-    // Use the global `fetch` (Node 18+). If you run on older Node, install node-fetch and do a dynamic import.
     const apiRes = await fetch(
       `https://api.mistral.ai/v1/agents/${AGENT_ID}/chat/completions`,
       {
@@ -229,7 +229,7 @@ Plan: ${plan.charAt(0).toUpperCase() + plan.slice(1)}
 Your access code: ${code}
 Valid until: ${new Date(expires).toLocaleDateString()}
 
-Use this on the login page to access your ${plan === 'premium' ? 'AI‐powered interactive lessons' : 'video‐based lessons'}.
+Use this on the login page to access your ${plan === 'premium' ? 'AI-powered interactive lessons' : 'video-based lessons'}.
 
 — SkillCraft Academy`
       });
