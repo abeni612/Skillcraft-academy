@@ -84,7 +84,7 @@ app.post('/api-chat', async (req, res) => {
     const reply = payload.choices?.[0]?.message?.content || 'Sorry, no reply.';
     return res.json({ reply });
   } catch (err) {
-    console.error('❌ Mistral API error:', err);
+    console.error('❌ Mistral API error:', err.message, err.stack);
     return res.status(500).json({ error: 'AI failed' });
   }
 });
