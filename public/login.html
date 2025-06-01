@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login – SkillCraft Academy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+  <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-sm">
+    <h2 class="text-2xl font-bold mb-6 text-center">Enter Your Access Code</h2>
+    <form id="login-form" class="space-y-4">
+      <input id="access-code" 
+             type="text" maxlength="8" 
+             placeholder="AB12CD34" 
+             required
+             class="w-full px-4 py-2 bg-gray-700 rounded-lg focus:ring-indigo-500"/>
+      <p id="login-error" class="text-red-400 text-sm hidden">
+        Invalid code. Please try again.
+      </p>
+      <button type="submit" class="btn-primary w-full py-2 rounded-lg font-medium">
+        Log In
+      </button>
+    </form>
+  </div>
+
+  <script>
+  document.getElementById('login-form').onsubmit = async e => {
+    e.preventDefault();
+    const code = document.getElementById('access-code')
+                     .value.trim().toUpperCase();
+    console.log('🔑 Trying code:', code);
+
+    try {
+      const resp = await fetch('/validate-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await resp.json();
+      console.log('↩️  /validate-code response:', data);
+
+      if (!data.ok) {
+        document.getElementById('login-error').classList.remove('hidden');
+        return;
+      }
+
+      // store and redirect
+      localStorage.setItem('accessCode', code);
+      localStorage.setItem('subject',  data.subject);
+      localStorage.setItem('plan',     data.plan);
+      alert(`✅ Logged in! Subject=${data.subject}, Plan=${data.plan}`);
+      window.location.href = 'dashboard.html';
+
+    } catch (err) {
+      console.error('❌ Fetch error:', err);
+      alert('Network error. Check console.');
+    }
+  };
+</script>
+
+</body>
+</html>

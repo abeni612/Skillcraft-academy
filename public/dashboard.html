@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>SkillCraft Academy – Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- ─── NAVBAR ─────────────────────────────────────────────────────────────── -->
+  <nav class="bg-gray-800 px-6 py-4 flex justify-between items-center shadow-md">
+    <h1 id="page-title" class="text-2xl font-extrabold">SkillCraft Academy</h1>
+    <button id="logout-btn" class="text-indigo-400 hover:text-indigo-200 font-medium">
+      Log Out
+    </button>
+  </nav>
+
+  <!-- ─── MAIN CONTENT ───────────────────────────────────────────────────────── -->
+  <main id="content" class="flex-grow p-6 overflow-y-auto">
+    <p id="loading" class="text-gray-400 text-center">Loading your courses…</p>
+  </main>
+
+  <!-- ─── SCRIPTS ─────────────────────────────────────────────────────────────── -->
+  <script>
+  (async () => {
+    const code = localStorage.getItem('accessCode');
+    if (!code) return window.location.href = 'login.html';
+
+    // 1) Validate code and fetch subject & plan
+    let res;
+    try {
+      res = await fetch('/validate-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      }).then(r => r.json());
+    } catch {
+      document.getElementById('content').innerHTML =
+        '<p class="text-red-400 text-center">Network error. Please try again.</p>';
+      return;
+    }
+    if (!res.ok) {
+      localStorage.removeItem('accessCode');
+      return window.location.href = 'login.html';
+    }
+
+    const { subject, plan } = res;
+    document.getElementById('page-title').textContent =
+      `SkillCraft Academy – ${subject}`;
+
+    // 2) Clear loading spinner
+    const container = document.getElementById('content');
+    container.innerHTML = '';
+
+    // 3) Render Normal plan: subject-specific video list
+    if (plan === 'normal') {
+      // Define subject → video list mapping
+      const videoLists = {
+        'Web Design & Development': [
+          { title: 'HTML Basics', url: 'https://youtu.be/VID_HTML' },
+          { title: 'CSS Fundamentals', url: 'https://youtu.be/VID_CSS' },
+          { title: 'JavaScript Intro', url: 'https://youtu.be/VID_JS' },
+        ],
+        'Graphics Design': [
+          { title: 'Photoshop Intro', url: 'https://youtu.be/VID_PHOTOSHOP' },
+          { title: 'Illustrator Basics', url: 'https://youtu.be/VID_ILLUSTRATOR' },
+          { title: 'Color Theory Essentials', url: 'https://youtu.be/VID_COLOR' },
+        ],
+        'Video Editing': [
+          { title: 'Premiere Pro Overview', url: 'https://youtu.be/VID_PREMIERE' },
+          { title: 'Cutting Techniques', url: 'https://youtu.be/VID_CUT' },
+          { title: 'Sound Design Basics', url: 'https://youtu.be/VID_SOUND' },
+        ],
+        'Content Creation': [
+          { title: 'Writing Engaging Copy', url: 'https://youtu.be/VID_COPYWRITING' },
+          { title: 'Social Media Strategy', url: 'https://youtu.be/VID_SOCIAL' },
+          { title: 'SEO Fundamentals', url: 'https://youtu.be/VID_SEO' },
+        ]
+      };
+
+      // Header
+      container.innerHTML = `
+        <h2 class="text-2xl font-bold mb-4">Your ${subject} Videos</h2>
+        <div id="video-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+      `;
+
+      const listContainer = document.getElementById('video-list');
+      const list = videoLists[subject] || [];
+
+      if (list.length === 0) {
+        listContainer.innerHTML =
+          '<p class="text-gray-400">No videos available for this subject yet.</p>';
+      } else {
+        list.forEach(v => {
+          const card = document.createElement('div');
+          card.className = 'bg-gray-800 p-4 rounded-lg shadow hover:bg-gray-700 transition';
+          card.innerHTML = `
+            <h3 class="text-lg font-semibold mb-2">${v.title}</h3>
+            <a href="${v.url}" target="_blank" class="text-indigo-400 hover:underline">
+              ▶ Watch on YouTube
+            </a>
+          `;
+          listContainer.append(card);
+        });
+      }
+
+    } else {
+      // 4) Render Premium plan: Mistral AI chat interface
+      container.innerHTML = `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold">AI Tutor – ${subject}</h2>
+          <p class="text-gray-400">Ask any questions or continue your lesson below.</p>
+        </div>
+        <div id="chat-wrapper" class="flex flex-col h-80 bg-gray-800 p-4 rounded-lg overflow-y-auto mb-4"></div>
+        <div class="flex">
+          <input id="user-input"
+                 type="text"
+                 placeholder="Type your question..."
+                 class="flex-grow px-4 py-2 bg-gray-700 rounded-l-lg focus:ring-indigo-500 focus:outline-none"/>
+          <button id="send-btn" class="bg-indigo-500 px-4 py-2 rounded-r-lg hover:bg-indigo-600">
+            Send
+          </button>
+        </div>
+      `;
+
+      const chatWrapper = document.getElementById('chat-wrapper');
+      const userInput   = document.getElementById('user-input');
+      const sendBtn     = document.getElementById('send-btn');
+
+      // Helper to append messages
+      const appendMsg = (who, text) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = who === 'user'
+          ? 'self-end bg-indigo-600 text-white p-2 rounded-lg mb-2 max-w-xs'
+          : 'self-start bg-gray-700 text-white p-2 rounded-lg mb-2 max-w-xs';
+        msgDiv.textContent = text;
+        chatWrapper.append(msgDiv);
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+      };
+
+      // Immediately trigger the AI to begin Lesson 1
+      // We send a special “(start)” marker; the system prompt knows to begin Lesson 1 for the subject.
+      try {
+        const initRes = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: '(start)',
+            subject
+          })
+        });
+        const { reply } = await initRes.json();
+        appendMsg('bot', reply);
+      } catch {
+        appendMsg('bot', `Welcome to your premium ${subject} course. Let’s begin Lesson 1!`);
+      }
+
+      // Handle user → AI interactions
+      sendBtn.onclick = async () => {
+        const text = userInput.value.trim();
+        if (!text) return;
+        appendMsg('user', text);
+        userInput.value = '';
+        try {
+          const r = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text, subject })
+          });
+          const { reply } = await r.json();
+          appendMsg('bot', reply);
+        } catch {
+          appendMsg('bot', 'Error contacting AI. Please try again.');
+        }
+      };
+    }
+
+    // 5) Wire Log Out
+    document.getElementById('logout-btn').onclick = () => {
+      localStorage.removeItem('accessCode');
+      window.location.href = 'login.html';
+    };
+  })();
+  </script>
+</body>
+</html>

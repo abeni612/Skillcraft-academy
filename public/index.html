@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillCraft Academy – Onboarding</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+    .step { 
+      transition: transform .3s ease, opacity .3s ease;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    .step-hidden { 
+      display: none; 
+      opacity: 0; 
+      transform: translateX(20px) 
+    }
+    .step-visible { 
+      display: block; 
+      opacity: 1; 
+      transform: translateX(0) 
+    }
+    @keyframes pulse { 0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)} }
+    .logo-animate { animation: pulse 2s infinite }
+    .btn-primary { 
+      background-color:#6366f1; 
+      transition:all .3s 
+    }
+    .btn-primary:hover { 
+      background-color:#4f46e5; 
+      transform:translateY(-2px) 
+    }
+    .subject-card { transition:all .3s }
+    .subject-card:hover { 
+      transform:translateY(-5px); 
+      box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+    .subject-card.selected { 
+      border-color:#6366f1; 
+      background-color:rgba(99,102,241,.1) 
+    }
+    .pricing-option.selected {
+      border-color: #6366f1;
+      background-color: rgba(99,102,241,.1);
+      box-shadow: 0 0 0 2px rgba(99,102,241,.3);
+    }
+    .file-input {
+      border: 1px solid #4b5563;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      background-color: #374151;
+      color: #f3f4f6;
+      width: 100%;
+    }
+    .file-input::file-selector-button {
+      display: none;
+    }
+    .copy-number {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-number:hover {
+      color: #818cf8;
+    }
+    .copy-number.copied {
+      color: #10b981;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <!-- Login shortcut -->
+  <!-- Add at the very top of your onboarding page -->
+<div class="text-right mb-4">
+  <a href="login.html" class="text-indigo-400 hover:underline font-medium">
+    Already have a code? Log In
+  </a>
+</div>
+
+
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div id="onboarding-flow">
+
+      <!-- Step 1: Splash -->
+      <div id="step-splash" class="step step-visible flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 logo-animate">
+          <span class="text-indigo-400">Skill</span><span class="text-indigo-200">Craft</span><span class="text-white">Academy</span>
+        </h1>
+        <p class="text-xl text-gray-300 mb-12">Master in-demand skills for the digital age</p>
+        <button id="get-started-btn" class="btn-primary px-8 py-3 rounded-full text-lg font-semibold opacity-0 transition-opacity duration-500">
+          Get Started
+        </button>
+      </div>
+
+      <!-- Step 2: User Info -->
+      <div id="step-user-info" class="step step-hidden flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+        <div class="bg-gray-800 rounded-xl p-8 w-full max-w-md shadow-2xl border border-gray-700">
+          <h2 class="text-2xl font-bold mb-6 text-center">Tell Us About Yourself</h2>
+          <form id="user-info-form">
+            <div class="mb-4">
+              <label for="name" class="block text-gray-300 mb-2">Full Name</label>
+              <input type="text" id="name" name="name" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your name" required>
+              <p id="name-error" class="text-red-400 text-sm mt-1 hidden">Please enter your name</p>
+            </div>
+            <div class="mb-4">
+              <label for="age" class="block text-gray-300 mb-2">Age</label>
+              <input type="number" id="age" name="age" min="10" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your age" required>
+              <p id="age-error" class="text-red-400 text-sm mt-1 hidden"></p>
+            </div>
+            <div class="mb-6">
+              <label for="email" class="block text-gray-300 mb-2">Email Address</label>
+              <input type="email" id="email" name="email" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="your@email.com" required>
+              <p id="email-error" class="text-red-400 text-sm mt-1 hidden">Please enter a valid email to send you the login code</p>
+            </div>
+            <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold">Continue</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Step 3: Subject Selection -->
+      <div id="step-subject" class="step step-hidden py-12 bg-gradient-to-br from-gray-900 to-gray-800">
+        <h2 class="text-3xl font-bold mb-8 text-center">Choose Your Learning Path</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 px-4">
+          <div class="subject-card bg-gray-800 p-6 rounded-xl border-2 border-gray-700 cursor-pointer" data-subject="web-dev">
+            <div class="flex items-center mb-4"><div class="bg-indigo-500 p-3 rounded-lg mr-4"><i class="fas fa-code text-white text-xl"></i></div><h3 class="text-xl font-semibold">Web Development</h3></div>
+            <p class="text-gray-400">Build modern websites and web applications from scratch</p>
+          </div>
+          <div class="subject-card bg-gray-800 p-6 rounded-xl border-2 border-gray-700 cursor-pointer" data-subject="graphics">
+            <div class="flex items-center mb-4"><div class="bg-pink-500 p-3 rounded-lg mr-4"><i class="fas fa-paint-brush text-white text-xl"></i></div><h3 class="text-xl font-semibold">Graphic Design</h3></div>
+            <p class="text-gray-400">Create stunning visual content and brand identities</p>
+          </div>
+          <div class="subject-card bg-gray-800 p-6 rounded-xl border-2 border-gray-700 cursor-pointer" data-subject="video">
+            <div class="flex items-center mb-4"><div class="bg-purple-500 p-3 rounded-lg mr-4"><i class="fas fa-film text-white text-xl"></i></div><h3 class="text-xl font-semibold">Video Editing</h3></div>
+            <p class="text-gray-400">Edit professional videos and tell compelling visual stories</p>
+          </div>
+          <div class="subject-card bg-gray-800 p-6 rounded-xl border-2 border-gray-700 cursor-pointer" data-subject="content">
+            <div class="flex items-center mb-4"><div class="bg-teal-500 p-3 rounded-lg mr-4"><i class="fas fa-pen-fancy text-white text-xl"></i></div><h3 class="text-xl font-semibold">Content Creation</h3></div>
+            <p class="text-gray-400">Craft engaging content for social media and digital platforms</p>
+          </div>
+        </div>
+        <div class="text-center">
+          <button id="subject-next-btn" disabled class="btn-primary px-8 py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Pricing Selection -->
+      <div id="step-pricing" class="step step-hidden py-12 bg-gradient-to-br from-gray-900 to-gray-800">
+        <h2 class="text-3xl font-bold mb-8 text-center">Select Your Plan</h2>
+        <div class="max-w-lg mx-auto bg-gray-800 rounded-xl p-6 mb-8 shadow-2xl border border-gray-700">
+          <h3 id="selected-subject-title" class="text-xl font-semibold mb-6 text-center text-indigo-300"></h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="pricing-option bg-gray-700 p-6 rounded-lg border-2 border-gray-600 cursor-pointer" data-plan="normal">
+              <input type="radio" id="normal-plan" name="plan" value="normal" class="hidden">
+              <label for="normal-plan" class="block cursor-pointer">
+                <h4 class="text-lg font-semibold mb-2">Basic Plan</h4>
+                <p id="normal-price" class="text-2xl font-bold mb-3 text-indigo-400">ETB 0</p>
+                <ul class="text-gray-400 text-sm space-y-2">
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>Carefully choosed videos </li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>Basic materials</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>Community support</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>Weekly Q&A</li>
+                </ul>
+              </label>
+            </div>
+            <div class="pricing-option bg-gray-700 p-6 rounded-lg border-2 border-gray-600 cursor-pointer" data-plan="premium">
+              <input type="radio" id="premium-plan" name="plan" value="premium" class="hidden">
+              <label for="premium-plan" class="block cursor-pointer">
+                <h4 class="text-lg font-semibold mb-2">Premium Plan -Highly Advised By Specials</h4>
+                <p id="premium-price" class="text-2xl font-bold mb-3 text-indigo-400">ETB 0</p>
+                <ul class="text-gray-400 text-sm space-y-2">
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>AI integrated learning system</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>All Basic features</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>1-on-1 mentoring</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>Project reviews</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle text-green-400 mr-2"></i>Certificate</li>
+                </ul>
+              </label>
+            </div>
+          </div>
+          <div class="text-center">
+            <button id="proceed-to-payment-btn" disabled class="btn-primary px-8 py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed">Proceed to Payment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Payment Submission -->
+      <div id="step-payment" class="step step-hidden py-12 bg-gradient-to-br from-gray-900 to-gray-800">
+        <h2 class="text-3xl font-bold mb-8 text-center">Complete Payment</h2>
+        <div class="max-w-md mx-auto bg-gray-800 rounded-xl p-6 shadow-2xl border border-gray-700">
+          <form id="payment-form" class="space-y-6">
+            <div>
+              <label class="block text-gray-300 mb-2">Your Email</label>
+              <div class="px-4 py-3 bg-gray-700 rounded-lg border border-gray-600">
+                <span id="user-email-display" class="font-medium"></span>
+              </div>
+            </div>
+            
+            <div>
+              <label for="receipt" class="block text-gray-300 mb-2">Payment Proof</label>
+              <div class="flex items-center mb-2">
+                <span class="text-gray-400 mr-2">Send to:</span>
+                <span id="payment-number" class="copy-number font-medium" data-number="0901186194">
+                  0945376561 <i class="fas fa-copy ml-1"></i>
+                </span>
+                <span id="copy-success" class="text-green-400 text-sm ml-2 hidden">Copied!</span>
+              </div>
+              
+              <input type="file" id="receipt" accept="image/*" class="file-input w-full" required>
+              
+              <p class="text-gray-400 text-sm mt-2">
+                <i class="fas fa-info-circle mr-1"></i> Please upload a clear screenshot of your TeleBirr payment to "yohanis"
+              </p>
+              <p id="receipt-error" class="text-red-400 text-sm mt-1 hidden">Please upload a valid image</p>
+            </div>
+            
+            <button type="submit" id="submit-payment-btn" disabled class="btn-primary w-full py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed">
+              Complete Payment
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
