@@ -1,22 +1,19 @@
 {
-  "dependencies": {
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "fs-extra": "^11.3.0",
-    "node-fetch": "^3.3.2",
-    "node-telegram-bot-api": "^0.66.0",
-    "nodemailer": "^7.0.3",
-    "uuid": "^11.1.0"
-  },
   "name": "tamrin-new",
   "version": "1.0.0",
   "description": "",
   "main": "bot-and-server.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node bot-and-server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "node-fetch": "^2.6.12",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemailer": "^7.0.3",
+    "uuid": "^11.1.0"
+  }
 }
