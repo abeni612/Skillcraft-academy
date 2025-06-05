@@ -1,71 +1,2921 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SkillCraft Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillCraft Academy | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .quiz-option:hover {
+            background-color: #f3f4f6;
+        }
+        .quiz-option.selected {
+            background-color: #e0f2fe;
+            border-color: #38bdf8;
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7;
+            border-color: #4ade80;
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #f87171;
+        }
+        .subject-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .web-dev {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .graphics {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        .video {
+            background-color: #ec4899;
+            color: white;
+        }
+        .content {
+            background-color: #10b981;
+            color: white;
+        }
+    </style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen flex flex-col items-center px-4 py-8">
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://via.placeholder.com/40" alt="SkillCraft Academy Logo" class="h-10 w-10 rounded-md">
+                <h1 class="ml-3 text-xl font-bold text-gray-900">SkillCraft Academy</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block">
+                    <div class="text-sm text-gray-500">Course: <span class="font-medium text-gray-900" id="current-course">Loading...</span></div>
+                    <div class="text-xs text-gray-400">Access Code: <span class="font-mono" id="user-code">ABC12345</span></div>
+                </div>
+                <div class="relative">
+                    <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
+                        <span class="hidden md:inline text-sm font-medium text-gray-700">Student</span>
+                        <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-  <div class="w-full max-w-3xl">
-    <h1 class="text-4xl font-bold text-center mb-6 text-indigo-400">🎓 SkillCraft Dashboard</h1>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Sidebar -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow p-4 sticky top-6">
+                    <h2 class="text-lg font-semibold mb-4">Course Progress</h2>
+                    
+                    <!-- Progress Indicator -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Course Completion</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div id="progress-bar" class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Modules -->
+                    <div class="space-y-2" id="course-modules">
+                        <!-- Dynamic content will be inserted here -->
+                    </div>
+                    
+                    <!-- Resources -->
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Resources</h3>
+                        <div class="space-y-2">
+                            <a href="#" class="flex items-center text-sm text-gray-600 hover:text-blue-600">
+                                <i class="fas fa-file-pdf mr-2"></i> Course PDF
+                            </a>
+                            <a href="#" class="flex items-center text-sm text-gray-600 hover:text-blue-600">
+                                <i class="fas fa-code mr-2"></i> Code Examples
+                            </a>
+                            <a href="#" class="flex items-center text-sm text-gray-600 hover:text-blue-600">
+                                <i class="fas fa-question-circle mr-2"></i> FAQ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lesson Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow overflow-hidden" id="lesson-container">
+                    <!-- Lesson Header -->
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded" id="lesson-counter">Lesson 1 of 6</span>
+                                <h2 class="mt-1 text-xl font-bold text-gray-900" id="lesson-title">Loading Lesson...</h2>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-gray-400 hover:text-gray-500">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-gray-500">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Player -->
+                    <div class="video-container">
+                        <iframe id="lesson-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <!-- Lesson Notes -->
+                    <div class="px-6 py-4">
+                        <div class="prose max-w-none" id="lesson-notes">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between">
+                            <button id="prev-lesson-btn" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+                                <i class="fas fa-arrow-left mr-2"></i> Previous
+                            </button>
+                            <button id="next-lesson-btn" class="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Next Lesson <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quiz Section (Initially Hidden) -->
+                <div id="quiz-section" class="bg-white rounded-lg shadow mt-6 hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-gray-900">Lesson Quiz</h2>
+                        <p class="text-sm text-gray-500 mt-1">Test your understanding of the material</p>
+                    </div>
+                    
+                    <div class="px-6 py-4">
+                        <div id="quiz-container">
+                            <!-- Quiz questions will be inserted here by JavaScript -->
+                        </div>
+                        
+                        <div class="mt-6 flex justify-end">
+                            <button id="submit-quiz-btn" class="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Submit Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quiz Results (Initially Hidden) -->
+                <div id="quiz-results" class="bg-white rounded-lg shadow mt-6 hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-gray-900">Quiz Results</h2>
+                    </div>
+                    
+                    <div class="px-6 py-4">
+                        <div class="text-center py-6">
+                            <div class="mx-auto h-24 w-24 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                                <span id="quiz-score" class="text-2xl font-bold text-blue-600">0%</span>
+                            </div>
+                            <h3 id="quiz-result-title" class="text-lg font-medium text-gray-900 mb-1">Quiz Completed</h3>
+                            <p id="quiz-result-message" class="text-sm text-gray-500">You scored 0 out of 0 questions correctly.</p>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-center">
+                            <button id="continue-course-btn" class="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Continue Course
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course Completion (Initially Hidden) -->
+                <div id="course-completion" class="bg-white rounded-lg shadow mt-6 hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-gray-900">Course Completed!</h2>
+                    </div>
+                    
+                    <div class="px-6 py-4">
+                        <div class="text-center py-6">
+                            <div class="mx-auto h-24 w-24 rounded-full bg-green-50 flex items-center justify-center mb-4 text-green-500">
+                                <i class="fas fa-trophy text-4xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">Congratulations!</h3>
+                            <p class="text-sm text-gray-500 mb-4">You've successfully completed the course.</p>
+                            
+                            <div class="max-w-md mx-auto bg-gray-50 rounded-lg p-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm font-medium text-gray-700">Final Score</span>
+                                    <span id="final-score" class="text-sm font-medium text-gray-900">90%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div id="final-score-bar" class="bg-green-600 h-2.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+                            <button class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i> Download Certificate
+                            </button>
+                            <button class="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-share-alt mr-2"></i> Share Achievement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
-      <p class="text-lg mb-2">
-        <strong>Subject:</strong> <span id="subject-display">...</span>
-      </p>
-      <p class="text-lg">
-        <strong>Plan:</strong> <span id="plan-display">...</span>
-      </p>
-    </div>
+    <script>
+        // Course Data for all subjects
+        const courseDatabase = {
+            "web-dev": {
+                id: "web-dev",
+                title: "Web Design & Development Fundamentals",
+                icon: "fa-code",
+                colorClass: "web-dev",
+                lessons: [
+                    {
+                        title: "Introduction to HTML",
+                        videoId: "pQN-pnXPaVg",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Key Concepts</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>HTML stands for HyperText Markup Language</li>
+                                <li>It's the standard markup language for creating web pages</li>
+                                <li>HTML describes the structure of a web page</li>
+                                <li>HTML consists of a series of elements</li>
+                                <li>HTML elements tell the browser how to display the content</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Basic HTML Structure</h3>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto mb-4"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Page Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;My First Heading&lt;/h1&gt;
+    &lt;p&gt;My first paragraph.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            
+                            <h3 class="text-lg font-semibold mb-2">HTML Elements</h3>
+                            <p class="mb-2">HTML elements are represented by tags:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><code>&lt;p&gt;</code> - Paragraph</li>
+                                <li><code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> - Headings</li>
+                                <li><code>&lt;a&gt;</code> - Links</li>
+                                <li><code>&lt;img&gt;</code> - Images</li>
+                                <li><code>&lt;div&gt;</code> - Division or section</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "What does HTML stand for?",
+                                options: [
+                                    "Hyperlinks and Text Markup Language",
+                                    "Home Tool Markup Language",
+                                    "Hyper Text Markup Language",
+                                    "Hyper Text Making Language"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "Which HTML element is used to define a paragraph?",
+                                options: [
+                                    "<para>",
+                                    "<p>",
+                                    "<paragraph>",
+                                    "<pg>"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is the correct HTML element for the largest heading?",
+                                options: [
+                                    "<h6>",
+                                    "<heading>",
+                                    "<h1>",
+                                    "<head>"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "HTML Elements and Structure",
+                        videoId: "kUMe1FH4CHE",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">HTML Document Structure</h3>
+                            <p class="mb-4">Every HTML document should have the following structure:</p>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto mb-4"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Document Title&lt;/title&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Content goes here --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Common HTML Elements</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Text Elements</h4>
+                                    <ul class="list-disc pl-5 text-sm">
+                                        <li><code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code>: Headings</li>
+                                        <li><code>&lt;p&gt;</code>: Paragraph</li>
+                                        <li><code>&lt;span&gt;</code>: Inline container</li>
+                                        <li><code>&lt;strong&gt;</code>: Important text</li>
+                                        <li><code>&lt;em&gt;</code>: Emphasized text</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Structural Elements</h4>
+                                    <ul class="list-disc pl-5 text-sm">
+                                        <li><code>&lt;div&gt;</code>: Division/section</li>
+                                        <li><code>&lt;header&gt;</code>: Header content</li>
+                                        <li><code>&lt;footer&gt;</code>: Footer content</li>
+                                        <li><code>&lt;section&gt;</code>: Section in document</li>
+                                        <li><code>&lt;article&gt;</code>: Independent content</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">HTML Attributes</h3>
+                            <p class="mb-2">Attributes provide additional information about elements:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><code>id</code>: Specifies a unique id</li>
+                                <li><code>class</code>: Specifies one or more class names</li>
+                                <li><code>src</code>: Specifies the source for embedded content</li>
+                                <li><code>href</code>: Specifies the URL for links</li>
+                                <li><code>alt</code>: Alternative text for images</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which HTML element is used to specify a footer for a document or section?",
+                                options: [
+                                    "<bottom>",
+                                    "<footer>",
+                                    "<section>",
+                                    "<div>"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is the correct HTML element for inserting a line break?",
+                                options: [
+                                    "<br>",
+                                    "<break>",
+                                    "<lb>",
+                                    "<newline>"
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                question: "Which HTML attribute specifies an alternate text for an image, if the image cannot be displayed?",
+                                options: [
+                                    "title",
+                                    "src",
+                                    "alt",
+                                    "longdesc"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "CSS Basics",
+                        videoId: "OXGznpKyb_s",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Introduction to CSS</h3>
+                            <p class="mb-4">CSS (Cascading Style Sheets) is used to style and layout web pages. It allows you to control the color, font, spacing, and many other aspects of HTML elements.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">CSS Syntax</h3>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto mb-4"><code>selector {
+    property: value;
+    property: value;
+}</code></pre>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Ways to Add CSS</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Inline CSS</h4>
+                                    <p class="text-sm">Using the style attribute in HTML elements</p>
+                                    <pre class="bg-gray-200 p-2 rounded text-xs mt-2"><code>&lt;p style="color:red;"&gt;Red text&lt;/p&gt;</code></pre>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Internal CSS</h4>
+                                    <p class="text-sm">Using a &lt;style&gt; element in the &lt;head&gt; section</p>
+                                    <pre class="bg-gray-200 p-2 rounded text-xs mt-2"><code>&lt;style&gt;
+    p { color: red; }
+&lt;/style&gt;</code></pre>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">External CSS</h4>
+                                    <p class="text-sm">Using an external .css file linked via &lt;link&gt;</p>
+                                    <pre class="bg-gray-200 p-2 rounded text-xs mt-2"><code>&lt;link rel="stylesheet" href="styles.css"&gt;</code></pre>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">CSS Selectors</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Element selector:</strong> <code>p { }</code></li>
+                                <li><strong>Class selector:</strong> <code>.intro { }</code></li>
+                                <li><strong>ID selector:</strong> <code>#header { }</code></li>
+                                <li><strong>Attribute selector:</strong> <code>a[target="_blank"] { }</code></li>
+                                <li><strong>Grouping selector:</strong> <code>h1, h2, h3 { }</code></li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "What does CSS stand for?",
+                                options: [
+                                    "Colorful Style Sheets",
+                                    "Cascading Style Sheets",
+                                    "Computer Style Sheets",
+                                    "Creative Style Sheets"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which HTML attribute is used to define inline styles?",
+                                options: [
+                                    "font",
+                                    "class",
+                                    "styles",
+                                    "style"
+                                ],
+                                correctAnswer: 3
+                            },
+                            {
+                                question: "Which CSS property is used to change the text color of an element?",
+                                options: [
+                                    "text-color",
+                                    "fgcolor",
+                                    "color",
+                                    "font-color"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "CSS Layouts",
+                        videoId: "Y8zMYaD1bz0",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">CSS Box Model</h3>
+                            <p class="mb-4">All HTML elements can be considered as boxes. The CSS box model describes the design and layout:</p>
+                            <div class="flex justify-center mb-4">
+                                <img src="https://www.w3schools.com/css/box-model.gif" alt="CSS Box Model" class="border border-gray-200 rounded-md">
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">CSS Display Property</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Block Elements</h4>
+                                    <ul class="list-disc pl-5 text-sm">
+                                        <li>Take up the full width available</li>
+                                        <li>Start on a new line</li>
+                                        <li>Examples: &lt;div&gt;, &lt;h1&gt;-&lt;h6&gt;, &lt;p&gt;</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Inline Elements</h4>
+                                    <ul class="list-disc pl-5 text-sm">
+                                        <li>Only take up as much width as necessary</li>
+                                        <li>Do not start on a new line</li>
+                                        <li>Examples: &lt;span&gt;, &lt;a&gt;, &lt;img&gt;</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">CSS Positioning</h3>
+                            <table class="min-w-full divide-y divide-gray-200 mb-4">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-mono">static</td>
+                                        <td class="px-3 py-2 text-sm">Default. Elements render in order</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-mono">relative</td>
+                                        <td class="px-3 py-2 text-sm">Positioned relative to normal position</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-mono">absolute</td>
+                                        <td class="px-3 py-2 text-sm">Positioned relative to nearest positioned ancestor</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-mono">fixed</td>
+                                        <td class="px-3 py-2 text-sm">Positioned relative to viewport</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-mono">sticky</td>
+                                        <td class="px-3 py-2 text-sm">Toggles between relative and fixed</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Flexbox</h3>
+                            <p class="mb-2">Flexbox is a one-dimensional layout model that offers space distribution between items and powerful alignment capabilities:</p>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto"><code>.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}</code></pre>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which property is used to change the left margin of an element?",
+                                options: [
+                                    "margin-left",
+                                    "padding-left",
+                                    "indent",
+                                    "left-margin"
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                question: "Which CSS property is used to specify the space between the element's border and its content?",
+                                options: [
+                                    "margin",
+                                    "spacing",
+                                    "padding",
+                                    "border-spacing"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "Which display value is used to create a flex container?",
+                                options: [
+                                    "flex",
+                                    "block-flex",
+                                    "flex-container",
+                                    "inline-flex"
+                                ],
+                                correctAnswer: 0
+                            }
+                        ]
+                    },
+                    {
+                        title: "JavaScript Fundamentals",
+                        videoId: "W6NZfCO5SIk",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is JavaScript?</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>A scripting language that enables dynamic interactivity on websites</li>
+                                <li>Executed in the browser (client-side) or on the server (Node.js)</li>
+                                <li>Works with HTML and CSS to create dynamic web applications</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Variables</h3>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto mb-4"><code>// Variable declaration
+let message = "Hello";
+const PI = 3.14;
+var count = 0;
 
-    <div id="normal-content" class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6 hidden">
-      <h2 class="text-xl font-semibold mb-4 text-indigo-300">📺 Video Lessons</h2>
-      <ul class="list-disc list-inside text-gray-300 space-y-2">
-        <li>Lesson 1: Introduction</li>
-        <li>Lesson 2: Core Concepts</li>
-        <li>Lesson 3: Hands-on Example</li>
-        <li>Lesson 4: Final Project</li>
-      </ul>
-    </div>
+// Variable types
+let name = "John";      // String
+let age = 30;           // Number
+let isStudent = true;   // Boolean
+let fruits = ["Apple", "Banana"]; // Array
+let person = {          // Object
+    firstName: "John",
+    lastName: "Doe"
+};</code></pre>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Functions</h3>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto mb-4"><code>// Function declaration
+function greet(name) {
+    return "Hello " + name;
+}
 
-    <div id="ai-chat-section" class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6 hidden">
-      <h2 class="text-xl font-semibold mb-4 text-indigo-300">🤖 AI Course Assistant</h2>
-      <div id="chat-messages" class="bg-gray-800 p-4 rounded max-h-64 overflow-y-auto text-sm border border-gray-700 mb-4"></div>
-      <form id="chat-form" class="flex gap-2">
-        <input id="chat-input" type="text" placeholder="Ask something..." class="flex-1 px-4 py-2 rounded bg-gray-700 text-white" required />
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded font-semibold">Send</button>
-      </form>
-    </div>
+// Function expression
+const greet = function(name) {
+    return "Hello " + name;
+}
 
-    <button onclick="logout()" class="mt-8 text-sm text-gray-400 hover:underline">Log out</button>
-  </div>
+// Arrow function (ES6)
+const greet = (name) => {
+    return "Hello " + name;
+}
 
-  <script>
-    const subject = localStorage.getItem('subject');
-    const plan = localStorage.getItem('plan');
-    const code = localStorage.getItem('accessCode');
+// Calling a function
+let greeting = greet("John");</code></pre>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Conditionals</h3>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto"><code>let age = 18;
 
-    if (!subject || !plan || !code) {
-      alert("Missing session data. Please log in again.");
-      location.href = "index.html";
-    }
+// If statement
+if (age >= 18) {
+    console.log("Adult");
+} else {
+    console.log("Minor");
+}
 
-    document.getElementById('subject-display').textContent = subject;
-    document.getElementById('plan-display').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+// Switch statement
+let day = 3;
+switch(day) {
+    case 1:
+        console.log("Monday");
+        break;
+    case 2:
+        console.log("Tuesday");
+        break;
+    default:
+        console.log("Other day");
+}</code></pre>
+                        `,
+                        quiz: [
+                            {
+                                question: "Inside which HTML element do we put the JavaScript?",
+                                options: [
+                                    "<javascript>",
+                                    "<script>",
+                                    "<js>",
+                                    "<scripting>"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "How do you create a function in JavaScript?",
+                                options: [
+                                    "function = myFunction()",
+                                    "function myFunction()",
+                                    "function:myFunction()",
+                                    "create myFunction()"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "How do you call a function named 'myFunction'?",
+                                options: [
+                                    "call myFunction()",
+                                    "myFunction()",
+                                    "call function myFunction()",
+                                    "execute myFunction()"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    }
+                ],
+                finalExam: [
+                    {
+                        question: "What does HTML stand for?",
+                        options: [
+                            "Hyperlinks and Text Markup Language",
+                            "Home Tool Markup Language",
+                            "Hyper Text Markup Language",
+                            "Hyper Text Making Language"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which HTML element is used to define the structure of an HTML document?",
+                        options: [
+                            "<structure>",
+                            "<body>",
+                            "<html>",
+                            "<head>"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which CSS property is used to change the text color of an element?",
+                        options: [
+                            "text-color",
+                            "fgcolor",
+                            "color",
+                            "font-color"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which property is used to change the left margin of an element?",
+                        options: [
+                            "margin-left",
+                            "padding-left",
+                            "indent",
+                            "left-margin"
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Inside which HTML element do we put the JavaScript?",
+                        options: [
+                            "<javascript>",
+                            "<script>",
+                            "<js>",
+                            "<scripting>"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which HTML attribute specifies an alternate text for an image, if the image cannot be displayed?",
+                        options: [
+                            "title",
+                            "src",
+                            "alt",
+                            "longdesc"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which display value is used to create a flex container?",
+                        options: [
+                            "flex",
+                            "block-flex",
+                            "flex-container",
+                            "inline-flex"
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "How do you call a function named 'myFunction'?",
+                        options: [
+                            "call myFunction()",
+                            "myFunction()",
+                            "call function myFunction()",
+                            "execute myFunction()"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which HTML element is used to define emphasized text?",
+                        options: [
+                            "<i>",
+                            "<em>",
+                            "<strong>",
+                            "<b>"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What does CSS stand for?",
+                        options: [
+                            "Colorful Style Sheets",
+                            "Cascading Style Sheets",
+                            "Computer Style Sheets",
+                            "Creative Style Sheets"
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            },
+            "graphics": {
+                id: "graphics",
+                title: "Graphics Design Fundamentals",
+                icon: "fa-paint-brush",
+                colorClass: "graphics",
+                lessons: [
+                    {
+                        title: "Introduction to Graphic Design",
+                        videoId: "sTi5SNgxE3U",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is Graphic Design?</h3>
+                            <p class="mb-4">Graphic design is the art and practice of planning and projecting ideas and experiences with visual and textual content. It communicates certain ideas or messages in a visual way.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Key Principles</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Balance:</strong> Distribution of visual weight</li>
+                                <li><strong>Contrast:</strong> Difference between elements</li>
+                                <li><strong>Emphasis:</strong> Making elements stand out</li>
+                                <li><strong>Movement:</strong> Leading the viewer's eye</li>
+                                <li><strong>Proportion:</strong> Size relationship between elements</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Common Tools</h3>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Adobe Photoshop</h4>
+                                    <p class="text-sm">For photo editing and raster graphics</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Adobe Illustrator</h4>
+                                    <p class="text-sm">For vector graphics and illustrations</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Adobe InDesign</h4>
+                                    <p class="text-sm">For layout design and publishing</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Figma</h4>
+                                    <p class="text-sm">For UI/UX design and prototyping</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Design Process</h3>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Define the problem</li>
+                                <li>Research and gather information</li>
+                                <li>Brainstorm and conceptualize</li>
+                                <li>Create prototypes</li>
+                                <li>Get feedback and refine</li>
+                                <li>Finalize and deliver</li>
+                            </ol>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which of these is NOT a principle of graphic design?",
+                                options: [
+                                    "Balance",
+                                    "Contrast",
+                                    "Resolution",
+                                    "Proportion"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "Which Adobe software is best for creating vector graphics?",
+                                options: [
+                                    "Photoshop",
+                                    "Illustrator",
+                                    "InDesign",
+                                    "Premiere"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is the first step in the design process?",
+                                options: [
+                                    "Create prototypes",
+                                    "Define the problem",
+                                    "Get feedback",
+                                    "Finalize design"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Color Theory",
+                        videoId: "_2LLXnUdUIc",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Understanding Color</h3>
+                            <p class="mb-4">Color is one of the most powerful tools in a designer's toolkit. It can influence mood, communicate meaning, and create visual harmony.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Color Models</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">RGB (Red, Green, Blue)</h4>
+                                    <p class="text-sm">Additive color model used for digital screens</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">CMYK (Cyan, Magenta, Yellow, Key/Black)</h4>
+                                    <p class="text-sm">Subtractive color model used for print</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Color Wheel</h3>
+                            <div class="flex justify-center mb-4">
+                                <img src="https://i.pinimg.com/originals/0f/3a/2a/0f3a2a8b1f4b1b8a8b1f4b1b8a8b1f4b.jpg" alt="Color Wheel" class="h-48 border border-gray-200 rounded-md">
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Color Schemes</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Monochromatic</h4>
+                                    <p class="text-sm">Different shades of a single color</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Analogous</h4>
+                                    <p class="text-sm">Colors next to each other on the wheel</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Complementary</h4>
+                                    <p class="text-sm">Colors opposite each other on the wheel</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Triadic</h4>
+                                    <p class="text-sm">Three colors evenly spaced on the wheel</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Tetradic</h4>
+                                    <p class="text-sm">Two complementary pairs (rectangle)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Split-Complementary</h4>
+                                    <p class="text-sm">A color plus the two adjacent to its complement</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Color Psychology</h3>
+                            <p class="mb-2">Colors evoke different emotions and associations:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Red:</strong> Energy, passion, danger</li>
+                                <li><strong>Blue:</strong> Trust, calm, professionalism</li>
+                                <li><strong>Green:</strong> Nature, growth, health</li>
+                                <li><strong>Yellow:</strong> Happiness, optimism, caution</li>
+                                <li><strong>Purple:</strong> Luxury, creativity, mystery</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which color model is used for digital screens?",
+                                options: [
+                                    "CMYK",
+                                    "RGB",
+                                    "RYB",
+                                    "HSV"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What type of color scheme uses colors opposite each other on the color wheel?",
+                                options: [
+                                    "Analogous",
+                                    "Monochromatic",
+                                    "Complementary",
+                                    "Triadic"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "Which color is most associated with trust and professionalism?",
+                                options: [
+                                    "Red",
+                                    "Blue",
+                                    "Yellow",
+                                    "Green"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Typography",
+                        videoId: "Ki6rcXvUWP8",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is Typography?</h3>
+                            <p class="mb-4">Typography is the art and technique of arranging type to make written language legible, readable, and appealing when displayed.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Typeface vs Font</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Typeface</h4>
+                                    <p class="text-sm">The design of lettering (e.g., Helvetica, Times New Roman)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Font</h4>
+                                    <p class="text-sm">A specific style and size of a typeface (e.g., Helvetica Bold 12pt)</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Type Classification</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Serif</h4>
+                                    <p class="text-sm">Small lines at ends of characters (e.g., Times New Roman)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Sans-serif</h4>
+                                    <p class="text-sm">Without small lines (e.g., Arial, Helvetica)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Script</h4>
+                                    <p class="text-sm">Cursive or handwritten style</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Display</h4>
+                                    <p class="text-sm">Decorative fonts for headlines</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Monospace</h4>
+                                    <p class="text-sm">Fixed-width characters (e.g., Courier)</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Typography Terms</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Kerning:</strong> Space between individual letters</li>
+                                <li><strong>Leading:</strong> Vertical space between lines of text</li>
+                                <li><strong>Tracking:</strong> Uniform spacing between all letters</li>
+                                <li><strong>Hierarchy:</strong> Visual organization of text elements</li>
+                                <li><strong>Alignment:</strong> How text is positioned (left, right, center, justified)</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Best Practices</h3>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Limit to 2-3 typefaces per design</li>
+                                <li>Ensure sufficient contrast between text and background</li>
+                                <li>Use appropriate line length (50-75 characters)</li>
+                                <li>Establish clear visual hierarchy</li>
+                                <li>Consider readability for your audience</li>
+                            </ol>
+                        `,
+                        quiz: [
+                            {
+                                question: "What is the difference between a typeface and a font?",
+                                options: [
+                                    "They are the same thing",
+                                    "Typeface is the design, font is a specific implementation",
+                                    "Font is the design, typeface is a specific implementation",
+                                    "Typeface is digital, font is print"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which of these is NOT a type classification?",
+                                options: [
+                                    "Serif",
+                                    "Sans-serif",
+                                    "Script",
+                                    "Paragraph"
+                                ],
+                                correctAnswer: 3
+                            },
+                            {
+                                question: "What term refers to the space between lines of text?",
+                                options: [
+                                    "Kerning",
+                                    "Tracking",
+                                    "Leading",
+                                    "Alignment"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "Layout and Composition",
+                        videoId: "3T2aA4WQp4E",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is Layout?</h3>
+                            <p class="mb-4">Layout refers to the arrangement of visual elements on a page. Good layout creates visual hierarchy, guides the viewer's eye, and communicates the message effectively.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Design Principles</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Proximity</h4>
+                                    <p class="text-sm">Related items should be grouped together</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Alignment</h4>
+                                    <p class="text-sm">Every element should have visual connection</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Repetition</h4>
+                                    <p class="text-sm">Repeat visual elements for consistency</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Contrast</h4>
+                                    <p class="text-sm">Different elements should be very different</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Grid Systems</h3>
+                            <p class="mb-2">Grids provide structure and consistency to layouts:</p>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Manuscript Grid:</strong> Simple single-column layout</li>
+                                <li><strong>Column Grid:</strong> Multiple vertical columns</li>
+                                <li><strong>Modular Grid:</strong> Both columns and rows</li>
+                                <li><strong>Hierarchical Grid:</strong> Custom grid based on content</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Common Layout Formats</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">F-Layout</h4>
+                                    <p class="text-sm">Eye scans in F pattern (common for web)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Z-Layout</h4>
+                                    <p class="text-sm">Eye scans in Z pattern (good for ads)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Golden Ratio</h4>
+                                    <p class="text-sm">1:1.618 proportion for harmonious layouts</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Rule of Thirds</h4>
+                                    <p class="text-sm">Divide layout into 3×3 grid for focal points</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">White Space</h3>
+                            <p class="mb-2">Also called negative space, it's the empty space between elements. Benefits include:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Improves readability</li>
+                                <li>Creates emphasis</li>
+                                <li>Provides visual breathing room</li>
+                                <li>Makes designs look more professional</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which design principle states that related items should be grouped together?",
+                                options: [
+                                    "Alignment",
+                                    "Proximity",
+                                    "Repetition",
+                                    "Contrast"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What type of grid has both columns and rows?",
+                                options: [
+                                    "Manuscript Grid",
+                                    "Column Grid",
+                                    "Modular Grid",
+                                    "Hierarchical Grid"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "Which layout pattern is most common for web design?",
+                                options: [
+                                    "F-Layout",
+                                    "Z-Layout",
+                                    "Golden Ratio",
+                                    "Rule of Thirds"
+                                ],
+                                correctAnswer: 0
+                            }
+                        ]
+                    },
+                    {
+                        title: "Designing for Branding",
+                        videoId: "wJh6bVW7f6k",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is Branding?</h3>
+                            <p class="mb-4">Branding is the process of creating a unique identity for a product, service, or company. It goes beyond just a logo to encompass the entire customer experience.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Brand Identity Elements</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Logo</h4>
+                                    <p class="text-sm">Visual mark that represents the brand</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Color Palette</h4>
+                                    <p class="text-sm">Set of colors associated with the brand</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Typography</h4>
+                                    <p class="text-sm">Fonts used consistently across materials</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Imagery Style</h4>
+                                    <p class="text-sm">Photography and illustration approach</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Tone of Voice</h4>
+                                    <p class="text-sm">How the brand communicates verbally</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Brand Guidelines</h4>
+                                    <p class="text-sm">Document that defines all these elements</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Logo Types</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Wordmark:</strong> Text-only logo (e.g., Google, Coca-Cola)</li>
+                                <li><strong>Lettermark:</strong> Initials only (e.g., IBM, HBO)</li>
+                                <li><strong>Pictorial:</strong> Icon or graphic (e.g., Apple, Twitter)</li>
+                                <li><strong>Abstract:</strong> Symbolic shape (e.g., Nike, Pepsi)</li>
+                                <li><strong>Mascot:</strong> Character (e.g., KFC, Michelin)</li>
+                                <li><strong>Combination:</strong> Mix of text and symbol (e.g., Burger King, Adidas)</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Creating a Brand Style Guide</h3>
+                            <p class="mb-2">A style guide ensures consistency across all brand materials:</p>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Define brand mission and values</li>
+                                <li>Establish logo usage rules</li>
+                                <li>Specify color palette (with exact values)</li>
+                                <li>Select typography hierarchy</li>
+                                <li>Set imagery guidelines</li>
+                                <li>Define tone of voice</li>
+                                <li>Include examples of correct usage</li>
+                            </ol>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Case Studies</h3>
+                            <p class="mb-2">Successful rebrands:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Apple (1997)</li>
+                                <li>Starbucks (2011)</li>
+                                <li>Airbnb (2014)</li>
+                                <li>Instagram (2016)</li>
+                                <li>Burger King (2021)</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which of these is NOT a brand identity element?",
+                                options: [
+                                    "Logo",
+                                    "Color Palette",
+                                    "Product Price",
+                                    "Typography"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "What type of logo uses initials only?",
+                                options: [
+                                    "Wordmark",
+                                    "Lettermark",
+                                    "Pictorial",
+                                    "Mascot"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is the purpose of a brand style guide?",
+                                options: [
+                                    "To limit creativity",
+                                    "To ensure consistency",
+                                    "To reduce costs",
+                                    "To impress clients"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    }
+                ],
+                finalExam: [
+                    {
+                        question: "Which of these is NOT a principle of graphic design?",
+                        options: [
+                            "Balance",
+                            "Contrast",
+                            "Resolution",
+                            "Proportion"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which color model is used for digital screens?",
+                        options: [
+                            "CMYK",
+                            "RGB",
+                            "RYB",
+                            "HSV"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the difference between a typeface and a font?",
+                        options: [
+                            "They are the same thing",
+                            "Typeface is the design, font is a specific implementation",
+                            "Font is the design, typeface is a specific implementation",
+                            "Typeface is digital, font is print"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which design principle states that related items should be grouped together?",
+                        options: [
+                            "Alignment",
+                            "Proximity",
+                            "Repetition",
+                            "Contrast"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which of these is NOT a brand identity element?",
+                        options: [
+                            "Logo",
+                            "Color Palette",
+                            "Product Price",
+                            "Typography"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "What type of logo uses initials only?",
+                        options: [
+                            "Wordmark",
+                            "Lettermark",
+                            "Pictorial",
+                            "Mascot"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What term refers to the space between lines of text?",
+                        options: [
+                            "Kerning",
+                            "Tracking",
+                            "Leading",
+                            "Alignment"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which layout pattern is most common for web design?",
+                        options: [
+                            "F-Layout",
+                            "Z-Layout",
+                            "Golden Ratio",
+                            "Rule of Thirds"
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "What is the purpose of a brand style guide?",
+                        options: [
+                            "To limit creativity",
+                            "To ensure consistency",
+                            "To reduce costs",
+                            "To impress clients"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which Adobe software is best for creating vector graphics?",
+                        options: [
+                            "Photoshop",
+                            "Illustrator",
+                            "InDesign",
+                            "Premiere"
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            },
+            "video": {
+                id: "video",
+                title: "Video Editing Fundamentals",
+                icon: "fa-video",
+                colorClass: "video",
+                lessons: [
+                    {
+                        title: "Introduction to Video Editing",
+                        videoId: "G2Q48JjJgJw",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is Video Editing?</h3>
+                            <p class="mb-4">Video editing is the process of manipulating and rearranging video shots to create a new work. It involves cutting segments, adding transitions, and including other effects.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Editing Workflow</h3>
+                            <ol class="list-decimal pl-5 space-y-1 mb-4">
+                                <li><strong>Ingest:</strong> Import and organize footage</li>
+                                <li><strong>Assembly:</strong> Create rough cut of the story</li>
+                                <li><strong>Fine Cut:</strong> Refine timing and pacing</li>
+                                <li><strong>Color Correction:</strong> Adjust colors and exposure</li>
+                                <li><strong>Audio Mixing:</strong> Balance and enhance sound</li>
+                                <li><strong>Export:</strong> Render final video file</li>
+                            </ol>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Common Software</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Adobe Premiere Pro</h4>
+                                    <p class="text-sm">Industry standard for professional editing</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Final Cut Pro</h4>
+                                    <p class="text-sm">Popular Mac-only editing software</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">DaVinci Resolve</h4>
+                                    <p class="text-sm">Powerful free option with excellent color tools</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">iMovie</h4>
+                                    <p class="text-sm">Simple editor for beginners (Mac only)</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Basic Editing Terms</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Timeline:</strong> Where you arrange and edit clips</li>
+                                <li><strong>Cut:</strong> Instant transition between clips</li>
+                                <li><strong>J-cut:</strong> Audio from next clip starts before video</li>
+                                <li><strong>L-cut:</strong> Audio from current clip continues into next</li>
+                                <li><strong>B-roll:</strong> Supplemental footage to enhance story</li>
+                                <li><strong>Sequence:</strong> Your edited video project</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which of these is NOT part of the standard editing workflow?",
+                                options: [
+                                    "Ingest",
+                                    "Assembly",
+                                    "Color Correction",
+                                    "Script Writing"
+                                ],
+                                correctAnswer: 3
+                            },
+                            {
+                                question: "What is the name for supplemental footage that enhances the story?",
+                                options: [
+                                    "A-roll",
+                                    "B-roll",
+                                    "C-roll",
+                                    "D-roll"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which software is a free option with excellent color tools?",
+                                options: [
+                                    "Adobe Premiere Pro",
+                                    "Final Cut Pro",
+                                    "DaVinci Resolve",
+                                    "iMovie"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "Cutting Techniques",
+                        videoId: "7bMQq4XbYM4",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Basic Cutting Principles</h3>
+                            <p class="mb-4">Effective cutting maintains continuity, supports the story, and keeps the viewer engaged. Here are key techniques:</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Types of Cuts</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Standard Cut</h4>
+                                    <p class="text-sm">Straight cut from one shot to another</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Jump Cut</h4>
+                                    <p class="text-sm">Cut that makes subject appear to jump</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Match Cut</h4>
+                                    <p class="text-sm">Cut that matches composition or action</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Cutaway</h4>
+                                    <p class="text-sm">Cut to related shot then back</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Cross Cut</h4>
+                                    <p class="text-sm">Alternating between simultaneous actions</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Smash Cut</h4>
+                                    <p class="text-sm">Abrupt cut for dramatic effect</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Continuity Editing</h3>
+                            <p class="mb-2">Maintaining visual consistency between shots:</p>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>180° Rule:</strong> Keep camera on one side of action</li>
+                                <li><strong>30° Rule:</strong> Change angle by at least 30° between shots</li>
+                                <li><strong>Eye Trace:</strong> Guide viewer's eye through the frame</li>
+                                <li><strong>Match on Action:</strong> Continue movement across cuts</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Pacing</h3>
+                            <p class="mb-2">The rhythm of your edits affects how the video feels:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Fast Pacing:</strong> Many quick cuts create energy</li>
+                                <li><strong>Slow Pacing:</strong> Longer shots create calm or tension</li>
+                                <li><strong>Variable Pacing:</strong> Mix speeds for dynamic flow</li>
+                                <li><strong>Cut to Beat:</strong> Sync cuts to music rhythm</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "What type of cut makes the subject appear to jump?",
+                                options: [
+                                    "Match Cut",
+                                    "Jump Cut",
+                                    "Cutaway",
+                                    "Cross Cut"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which rule states you should keep the camera on one side of the action?",
+                                options: [
+                                    "30° Rule",
+                                    "90° Rule",
+                                    "180° Rule",
+                                    "360° Rule"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "What editing technique creates energy through many quick cuts?",
+                                options: [
+                                    "Slow Pacing",
+                                    "Fast Pacing",
+                                    "Variable Pacing",
+                                    "Cut to Beat"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Transitions & Effects",
+                        videoId: "5Z4qT_5PvUY",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Understanding Transitions</h3>
+                            <p class="mb-4">Transitions are visual effects that bridge two shots. They can be subtle or dramatic, depending on the desired effect.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Common Transition Types</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Cut</h4>
+                                    <p class="text-sm">Instant change (most common)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Dissolve</h4>
+                                    <p class="text-sm">One shot fades as next appears</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Wipe</h4>
+                                    <p class="text-sm">New shot replaces old in pattern</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Fade In/Out</h4>
+                                    <p class="text-sm">To/from black (or other color)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Morph</h4>
+                                    <p class="text-sm">One image transforms into another</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Zoom</h4>
+                                    <p class="text-sm">Transition using zoom effect</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">When to Use Transitions</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Cut:</strong> Most scene changes</li>
+                                <li><strong>Dissolve:</strong> Passage of time or location change</li>
+                                <li><strong>Fade:</strong> Beginning/end of video or major section</li>
+                                <li><strong>Wipe:</strong> Stylized transitions (use sparingly)</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Video Effects</h3>
+                            <p class="mb-2">Common effects to enhance your video:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Color Correction</h4>
+                                    <p class="text-sm">Adjust exposure, contrast, white balance</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Color Grading</h4>
+                                    <p class="text-sm">Create specific look or mood</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Speed Changes</h4>
+                                    <p class="text-sm">Slow motion or fast motion</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Stabilization</h4>
+                                    <p class="text-sm">Smooth shaky footage</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Best Practices</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Use transitions purposefully, not just for decoration</li>
+                                <li>Keep most transitions subtle</li>
+                                <li>Maintain consistent style throughout project</li>
+                                <li>Avoid overusing flashy transitions</li>
+                                <li>Ensure transitions support the story</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which transition indicates the passage of time?",
+                                options: [
+                                    "Cut",
+                                    "Dissolve",
+                                    "Wipe",
+                                    "Fade"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is the difference between color correction and color grading?",
+                                options: [
+                                    "They are the same thing",
+                                    "Correction fixes issues, grading creates style",
+                                    "Grading fixes issues, correction creates style",
+                                    "Correction is for photos, grading for video"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "When should you use a fade transition?",
+                                options: [
+                                    "Most scene changes",
+                                    "Beginning/end of video",
+                                    "Passage of time",
+                                    "Stylized effects"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Audio Editing",
+                        videoId: "gVTLpcZ85us",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">The Importance of Audio</h3>
+                            <p class="mb-4">Good audio is just as important as good video. Poor audio quality can ruin an otherwise great video.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Audio Components</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Dialogue</h4>
+                                    <p class="text-sm">Spoken words (most important element)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Music</h4>
+                                    <p class="text-sm">Sets mood and supports emotion</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Sound Effects</h4>
+                                    <p class="text-sm">Enhance realism and impact</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Ambience</h4>
+                                    <p class="text-sm">Background sounds of environment</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Audio Editing Techniques</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Volume Leveling:</strong> Balance audio levels</li>
+                                <li><strong>Noise Reduction:</strong> Remove background noise</li>
+                                <li><strong>EQ:</strong> Adjust frequency balance</li>
+                                <li><strong>Compression:</strong> Even out dynamic range</li>
+                                <li><strong>Fades:</strong> Smooth audio beginnings/endings</li>
+                                <li><strong>Ducking:</strong> Lower music when dialogue plays</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Working with Music</h3>
+                            <p class="mb-2">Tips for using music effectively:</p>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Choose music that matches the video's mood</li>
+                                <li>Ensure music doesn't overpower dialogue</li>
+                                <li>Edit music to fit video length</li>
+                                <li>Use music transitions (fades, cuts on beat)</li>
+                                <li>Consider copyright and licensing</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Audio Mixing</h3>
+                            <p class="mb-2">Balancing all audio elements:</p>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Set dialogue at consistent level (-6dB to -3dB)</li>
+                                <li>Adjust music to support but not overpower (-12dB to -18dB)</li>
+                                <li>Add sound effects at appropriate levels</li>
+                                <li>Include ambient sound subtly</li>
+                                <li>Use headphones to check mix</li>
+                            </ol>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which audio component is typically most important?",
+                                options: [
+                                    "Dialogue",
+                                    "Music",
+                                    "Sound Effects",
+                                    "Ambience"
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                question: "What technique lowers music when dialogue plays?",
+                                options: [
+                                    "Noise Reduction",
+                                    "Ducking",
+                                    "Compression",
+                                    "EQ"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is a good target level for dialogue in the mix?",
+                                options: [
+                                    "-24dB to -18dB",
+                                    "-12dB to -6dB",
+                                    "-6dB to -3dB",
+                                    "0dB to +3dB"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "Exporting & Delivery",
+                        videoId: "5wBZ6x5D_0k",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Export Settings</h3>
+                            <p class="mb-4">Choosing the right export settings ensures your video looks its best for its intended platform and audience.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Common Formats</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">MP4 (H.264)</h4>
+                                    <p class="text-sm">Most widely compatible, good quality</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">MOV (ProRes)</h4>
+                                    <p class="text-sm">High quality, large file size</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">MKV</h4>
+                                    <p class="text-sm">Open format, supports multiple codecs</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">GIF</h4>
+                                    <p class="text-sm">For short, looping animations</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Resolution & Frame Rate</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>SD:</strong> 720×480 (older standard)</li>
+                                <li><strong>HD:</strong> 1280×720 (720p)</li>
+                                <li><strong>Full HD:</strong> 1920×1080 (1080p)</li>
+                                <li><strong>4K UHD:</strong> 3840×2160</li>
+                                <li><strong>8K UHD:</strong> 7680×4320</li>
+                                <li><strong>Frame Rates:</strong> 24fps (cinematic), 30fps (TV), 60fps (smooth motion)</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Platform-Specific Settings</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">YouTube</h4>
+                                    <p class="text-sm">1080p or 4K, H.264, 8-12Mbps</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Instagram</h4>
+                                    <p class="text-sm">1080×1080 (square), 1080×1350 (portrait)</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">TikTok</h4>
+                                    <p class="text-sm">1080×1920 (vertical), H.264</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Compression</h3>
+                            <p class="mb-2">Balancing quality and file size:</p>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Bitrate:</strong> Higher = better quality but larger file</li>
+                                <li><strong>CRF (Constant Rate Factor):</strong> 18-23 for high quality</li>
+                                <li><strong>VBR vs CBR:</strong> Variable bitrate is more efficient</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Delivery Methods</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Online Platforms:</strong> YouTube, Vimeo, etc.</li>
+                                <li><strong>Cloud Storage:</strong> Google Drive, Dropbox</li>
+                                <li><strong>Physical Media:</strong> USB drives, DVDs</li>
+                                <li><strong>File Transfer:</strong> WeTransfer, FTP</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which format is most widely compatible for web delivery?",
+                                options: [
+                                    "MOV (ProRes)",
+                                    "MP4 (H.264)",
+                                    "MKV",
+                                    "GIF"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What resolution is considered Full HD?",
+                                options: [
+                                    "720×480",
+                                    "1280×720",
+                                    "1920×1080",
+                                    "3840×2160"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "What frame rate gives a cinematic look?",
+                                options: [
+                                    "24fps",
+                                    "30fps",
+                                    "60fps",
+                                    "120fps"
+                                ],
+                                correctAnswer: 0
+                            }
+                        ]
+                    }
+                ],
+                finalExam: [
+                    {
+                        question: "Which of these is NOT part of the standard editing workflow?",
+                        options: [
+                            "Ingest",
+                            "Assembly",
+                            "Color Correction",
+                            "Script Writing"
+                        ],
+                        correctAnswer: 3
+                    },
+                    {
+                        question: "What type of cut makes the subject appear to jump?",
+                        options: [
+                            "Match Cut",
+                            "Jump Cut",
+                            "Cutaway",
+                            "Cross Cut"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which transition indicates the passage of time?",
+                        options: [
+                            "Cut",
+                            "Dissolve",
+                            "Wipe",
+                            "Fade"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which audio component is typically most important?",
+                        options: [
+                            "Dialogue",
+                            "Music",
+                            "Sound Effects",
+                            "Ambience"
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Which format is most widely compatible for web delivery?",
+                        options: [
+                            "MOV (ProRes)",
+                            "MP4 (H.264)",
+                            "MKV",
+                            "GIF"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the name for supplemental footage that enhances the story?",
+                        options: [
+                            "A-roll",
+                            "B-roll",
+                            "C-roll",
+                            "D-roll"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which rule states you should keep the camera on one side of the action?",
+                        options: [
+                            "30° Rule",
+                            "90° Rule",
+                            "180° Rule",
+                            "360° Rule"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "What is the difference between color correction and color grading?",
+                        options: [
+                            "They are the same thing",
+                            "Correction fixes issues, grading creates style",
+                            "Grading fixes issues, correction creates style",
+                            "Correction is for photos, grading for video"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What technique lowers music when dialogue plays?",
+                        options: [
+                            "Noise Reduction",
+                            "Ducking",
+                            "Compression",
+                            "EQ"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What resolution is considered Full HD?",
+                        options: [
+                            "720×480",
+                            "1280×720",
+                            "1920×1080",
+                            "3840×2160"
+                        ],
+                        correctAnswer: 2
+                    }
+                ]
+            },
+            "content": {
+                id: "content",
+                title: "Content Creation Mastery",
+                icon: "fa-pen-fancy",
+                colorClass: "content",
+                lessons: [
+                    {
+                        title: "Content Strategy",
+                        videoId: "P7izYjkdf6c",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">What is Content Strategy?</h3>
+                            <p class="mb-4">Content strategy is the planning, development, and management of content to achieve specific business goals. It aligns content with audience needs and organizational objectives.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Key Components</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Audience Research</h4>
+                                    <p class="text-sm">Understand who you're creating for</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Content Audit</h4>
+                                    <p class="text-sm">Evaluate existing content</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Messaging Framework</h4>
+                                    <p class="text-sm">Define core messages and tone</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Content Calendar</h4>
+                                    <p class="text-sm">Plan content publication schedule</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Content Types</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Blog Posts:</strong> Informative articles</li>
+                                <li><strong>Videos:</strong> Engaging visual content</li>
+                                <li><strong>Social Media Posts:</strong> Bite-sized content</li>
+                                <li><strong>Infographics:</strong> Visual data representation</li>
+                                <li><strong>Podcasts:</strong> Audio content</li>
+                                <li><strong>Ebooks/Guides:</strong> In-depth resources</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Content Funnel</h3>
+                            <div class="flex justify-center mb-4">
+                                <img src="https://neilpatel.com/wp-content/uploads/2019/08/marketing-funnel-illustration.png" alt="Content Funnel" class="h-48 border border-gray-200 rounded-md">
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Developing a Strategy</h3>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Define business goals</li>
+                                <li>Research your audience</li>
+                                <li>Analyze competitors</li>
+                                <li>Audit existing content</li>
+                                <li>Determine content types and channels</li>
+                                <li>Create content calendar</li>
+                                <li>Establish metrics for success</li>
+                            </ol>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which of these is NOT a key component of content strategy?",
+                                options: [
+                                    "Audience Research",
+                                    "Content Audit",
+                                    "Graphic Design",
+                                    "Messaging Framework"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "What type of content is best for visual data representation?",
+                                options: [
+                                    "Blog Posts",
+                                    "Infographics",
+                                    "Podcasts",
+                                    "Social Media Posts"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What is the first step in developing a content strategy?",
+                                options: [
+                                    "Research your audience",
+                                    "Define business goals",
+                                    "Analyze competitors",
+                                    "Create content calendar"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Writing for the Web",
+                        videoId: "v-pJ3i5Qn6Y",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Web Writing Principles</h3>
+                            <p class="mb-4">Writing for the web is different from other forms of writing. Web users scan content rather than read word-for-word.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Best Practices</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Be concise:</strong> Get to the point quickly</li>
+                                <li><strong>Use headings:</strong> Break up text with clear sections</li>
+                                <li><strong>Write scannable content:</strong> Use bullet points and short paragraphs</li>
+                                <li><strong>Front-load information:</strong> Put important points first</li>
+                                <li><strong>Use active voice:</strong> Makes writing more engaging</li>
+                                <li><strong>Include links:</strong> Provide additional resources</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">SEO Writing</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Keyword Research</h4>
+                                    <p class="text-sm">Find terms your audience searches for</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">On-Page SEO</h4>
+                                    <p class="text-sm">Optimize titles, headings, and content</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Meta Descriptions</h4>
+                                    <p class="text-sm">Write compelling search result snippets</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Internal Linking</h4>
+                                    <p class="text-sm">Connect related content on your site</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Headline Writing</h3>
+                            <p class="mb-2">Effective headlines grab attention and encourage clicks:</p>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Use numbers (e.g., "7 Ways to...")</li>
+                                <li>Ask questions</li>
+                                <li>Promise a benefit</li>
+                                <li>Create curiosity</li>
+                                <li>Keep it under 60 characters</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Content Structure</h3>
+                            <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto"><code>1. Compelling Headline
+2. Engaging Introduction
+3. Subheadings for Scannability
+4. Short Paragraphs (2-3 sentences)
+5. Bullet Points and Numbered Lists
+6. Relevant Images/Media
+7. Clear Call-to-Action</code></pre>
+                        `,
+                        quiz: [
+                            {
+                                question: "How do most web users consume content?",
+                                options: [
+                                    "Read word-for-word",
+                                    "Scan quickly",
+                                    "Listen to audio versions",
+                                    "Print and read later"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which of these is NOT a best practice for web writing?",
+                                options: [
+                                    "Use long paragraphs",
+                                    "Be concise",
+                                    "Use headings",
+                                    "Write scannable content"
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                question: "What is the ideal maximum length for a headline?",
+                                options: [
+                                    "30 characters",
+                                    "60 characters",
+                                    "90 characters",
+                                    "120 characters"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Visual Content Creation",
+                        videoId: "4qJ2O40dGWk",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">The Power of Visuals</h3>
+                            <p class="mb-4">Visual content is processed 60,000 times faster than text. It increases engagement, improves comprehension, and boosts retention.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Types of Visual Content</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Images</h4>
+                                    <p class="text-sm">Photos, illustrations, graphics</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Infographics</h4>
+                                    <p class="text-sm">Visual representations of information</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Videos</h4>
+                                    <p class="text-sm">Live action, animation, screencasts</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Presentations</h4>
+                                    <p class="text-sm">Slide decks for sharing knowledge</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Memes/GIFs</h4>
+                                    <p class="text-sm">Fun, shareable visual content</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Data Visualizations</h4>
+                                    <p class="text-sm">Charts, graphs, and maps</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Tools for Visual Content</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Canva:</strong> Easy graphic design for non-designers</li>
+                                <li><strong>Adobe Creative Suite:</strong> Professional tools (Photoshop, Illustrator)</li>
+                                <li><strong>Piktochart/Infogram:</strong> Infographic creators</li>
+                                <li><strong>Unsplash/Pexels:</strong> Free stock photo sources</li>
+                                <li><strong>Lumen5/Animoto:</strong> Video creation tools</li>
+                                <li><strong>Tableau/Power BI:</strong> Data visualization</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Design Principles</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Contrast</h4>
+                                    <p class="text-sm">Make important elements stand out</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Alignment</h4>
+                                    <p class="text-sm">Create order and organization</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Repetition</h4>
+                                    <p class="text-sm">Use consistent visual elements</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Proximity</h4>
+                                    <p class="text-sm">Group related items together</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Best Practices</h3>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Use high-quality images</li>
+                                <li>Keep text on visuals minimal</li>
+                                <li>Maintain brand consistency</li>
+                                <li>Optimize file sizes for web</li>
+                                <li>Include alt text for accessibility</li>
+                                <li>Test different visual formats</li>
+                            </ol>
+                        `,
+                        quiz: [
+                            {
+                                question: "How much faster is visual content processed compared to text?",
+                                options: [
+                                    "10 times",
+                                    "1,000 times",
+                                    "60,000 times",
+                                    "100,000 times"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "Which tool is best for non-designers to create graphics?",
+                                options: [
+                                    "Adobe Photoshop",
+                                    "Canva",
+                                    "Tableau",
+                                    "Power BI"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which design principle makes important elements stand out?",
+                                options: [
+                                    "Alignment",
+                                    "Contrast",
+                                    "Repetition",
+                                    "Proximity"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        title: "Social Media Content",
+                        videoId: "n7J7xVqFc5I",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">Social Media Landscape</h3>
+                            <p class="mb-4">Each social platform has its own culture, best practices, and content formats. Successful content creators adapt their approach for each network.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Platform Overview</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Facebook</h4>
+                                    <p class="text-sm">Broad audience, mixed content types</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Instagram</h4>
+                                    <p class="text-sm">Visual-first, younger demographic</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Twitter</h4>
+                                    <p class="text-sm">Text-focused, real-time conversations</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">LinkedIn</h4>
+                                    <p class="text-sm">Professional network, B2B focus</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">TikTok</h4>
+                                    <p class="text-sm">Short-form video, Gen Z audience</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">YouTube</h4>
+                                    <p class="text-sm">Long-form video, search-driven</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Content Types by Platform</h3>
+                            <table class="min-w-full divide-y divide-gray-200 mb-4">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Platform</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Best Content Types</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm">Facebook</td>
+                                        <td class="px-3 py-2 text-sm">Native video, live streams, image carousels</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm">Instagram</td>
+                                        <td class="px-3 py-2 text-sm">Stories, Reels, high-quality images</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm">Twitter</td>
+                                        <td class="px-3 py-2 text-sm">Threads, polls, GIFs, trending topics</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm">LinkedIn</td>
+                                        <td class="px-3 py-2 text-sm">Articles, professional insights, company updates</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm">TikTok</td>
+                                        <td class="px-3 py-2 text-sm">Trending sounds, challenges, quick tutorials</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm">YouTube</td>
+                                        <td class="px-3 py-2 text-sm">How-tos, vlogs, product reviews, educational content</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Engagement Strategies</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Post at optimal times for your audience</li>
+                                <li>Use platform-specific features (e.g., Stories, Reels)</li>
+                                <li>Ask questions to encourage comments</li>
+                                <li>Respond to comments and messages</li>
+                                <li>Run contests and giveaways</li>
+                                <li>Collaborate with other creators</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Analytics & Optimization</h3>
+                            <p class="mb-2">Track performance and improve over time:</p>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Monitor engagement metrics (likes, shares, comments)</li>
+                                <li>Track follower growth</li>
+                                <li>Analyze best-performing content</li>
+                                <li>Test different post formats</li>
+                                <li>Adjust strategy based on data</li>
+                            </ol>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which platform is best for B2B content?",
+                                options: [
+                                    "TikTok",
+                                    "LinkedIn",
+                                    "Instagram",
+                                    "YouTube"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "What type of content works best on Instagram?",
+                                options: [
+                                    "Long articles",
+                                    "High-quality images and Reels",
+                                    "Text-only posts",
+                                    "Professional whitepapers"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which strategy helps increase engagement?",
+                                options: [
+                                    "Posting at random times",
+                                    "Ignoring comments",
+                                    "Asking questions",
+                                    "Using only one content format"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "Content Promotion",
+                        videoId: "Q6rSp7SxLw4",
+                        notes: `
+                            <h3 class="text-lg font-semibold mb-2">The Importance of Promotion</h3>
+                            <p class="mb-4">Creating great content isn't enough - you need to promote it effectively to reach your target audience.</p>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Organic Promotion</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Social Media Sharing</h4>
+                                    <p class="text-sm">Share across all relevant platforms</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Email Marketing</h4>
+                                    <p class="text-sm">Include in newsletters to subscribers</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">SEO Optimization</h4>
+                                    <p class="text-sm">Improve search visibility</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Community Engagement</h4>
+                                    <p class="text-sm">Share in relevant forums and groups</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Paid Promotion</h3>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Social Media Ads:</strong> Targeted promotion on platforms</li>
+                                <li><strong>Search Ads:</strong> Google Ads for search traffic</li>
+                                <li><strong>Native Advertising:</strong> Sponsored content on publisher sites</li>
+                                <li><strong>Influencer Partnerships:</strong> Pay creators to share your content</li>
+                                <li><strong>Content Syndication:</strong> Pay to distribute on other sites</li>
+                            </ul>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Repurposing Content</h3>
+                            <p class="mb-2">Get more mileage from your content:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Blog to Social</h4>
+                                    <p class="text-sm">Turn articles into multiple social posts</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Video to Blog</h4>
+                                    <p class="text-sm">Transcribe videos into articles</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Data to Infographic</h4>
+                                    <p class="text-sm">Visualize statistics and research</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">Presentation to Slideshare</h4>
+                                    <p class="text-sm">Upload decks to sharing platforms</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md">
+                                    <h4 class="font-medium mb-1">FAQ to Blog Series</h4>
+                                    <p class="text-sm">Expand common questions into posts</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Collaboration Strategies</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Guest Posting:</strong> Write for other blogs in your niche</li>
+                                <li><strong>Expert Roundups:</strong> Include quotes from influencers</li>
+                                <li><strong>Co-Creation:</strong> Partner on content with others</li>
+                                <li><strong>Social Takeovers:</strong> Let others run your accounts</li>
+                                <li><strong>Cross-Promotion:</strong> Share each other's content</li>
+                            </ul>
+                        `,
+                        quiz: [
+                            {
+                                question: "Which of these is NOT an organic promotion method?",
+                                options: [
+                                    "Social Media Sharing",
+                                    "Email Marketing",
+                                    "Social Media Ads",
+                                    "SEO Optimization"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                question: "What is the practice of turning one piece of content into multiple formats called?",
+                                options: [
+                                    "Content Syndication",
+                                    "Repurposing",
+                                    "Plagiarism",
+                                    "Duplication"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                question: "Which collaboration strategy involves writing for other blogs?",
+                                options: [
+                                    "Expert Roundups",
+                                    "Guest Posting",
+                                    "Social Takeovers",
+                                    "Cross-Promotion"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    }
+                ],
+                finalExam: [
+                    {
+                        question: "Which of these is NOT a key component of content strategy?",
+                        options: [
+                            "Audience Research",
+                            "Content Audit",
+                            "Graphic Design",
+                            "Messaging Framework"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "How do most web users consume content?",
+                        options: [
+                            "Read word-for-word",
+                            "Scan quickly",
+                            "Listen to audio versions",
+                            "Print and read later"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "How much faster is visual content processed compared to text?",
+                        options: [
+                            "10 times",
+                            "1,000 times",
+                            "60,000 times",
+                            "100,000 times"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Which platform is best for B2B content?",
+                        options: [
+                            "TikTok",
+                            "LinkedIn",
+                            "Instagram",
+                            "YouTube"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which of these is NOT an organic promotion method?",
+                        options: [
+                            "Social Media Sharing",
+                            "Email Marketing",
+                            "Social Media Ads",
+                            "SEO Optimization"
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "What type of content is best for visual data representation?",
+                        options: [
+                            "Blog Posts",
+                            "Infographics",
+                            "Podcasts",
+                            "Social Media Posts"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which tool is best for non-designers to create graphics?",
+                        options: [
+                            "Adobe Photoshop",
+                            "Canva",
+                            "Tableau",
+                            "Power BI"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What type of content works best on Instagram?",
+                        options: [
+                            "Long articles",
+                            "High-quality images and Reels",
+                            "Text-only posts",
+                            "Professional whitepapers"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "What is the practice of turning one piece of content into multiple formats called?",
+                        options: [
+                            "Content Syndication",
+                            "Repurposing",
+                            "Plagiarism",
+                            "Duplication"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Which collaboration strategy involves writing for other blogs?",
+                        options: [
+                            "Expert Roundups",
+                            "Guest Posting",
+                            "Social Takeovers",
+                            "Cross-Promotion"
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            }
+        };
 
-    if (plan === 'premium') {
-      document.getElementById('ai-chat-section').classList.remove('hidden');
-    } else {
-      document.getElementById('normal-content').classList.remove('hidden');
-    }
+        // Initialize user data if not already set
+        if (!localStorage.getItem('skillcraft_user')) {
+            const userData = {
+                code: 'ABC12345',
+                subject: 'web-dev', // Default subject
+                currentLesson: 0,
+                quizScores: [],
+                completed: false,
+                startDate: new Date().toISOString()
+            };
+            localStorage.setItem('skillcraft_user', JSON.stringify(userData));
+        }
 
-    function logout() {
-      localStorage.clear();
-      location.href = "index.html";
-    }
-  </script>
-  <script src="dashboard.js"></script>
+        // Get user data
+        const userData = JSON.parse(localStorage.getItem('skillcraft_user'));
+        const currentSubject = userData.subject || 'web-dev';
+        const currentCourse = courseDatabase[currentSubject];
+
+        // DOM Elements
+        const lessonTitleEl = document.getElementById('lesson-title');
+        const lessonVideoEl = document.getElementById('lesson-video');
+        const lessonNotesEl = document.getElementById('lesson-notes');
+        const nextLessonBtn = document.getElementById('next-lesson-btn');
+        const prevLessonBtn = document.getElementById('prev-lesson-btn');
+        const quizSection = document.getElementById('quiz-section');
+        const quizContainer = document.getElementById('quiz-container');
+        const submitQuizBtn = document.getElementById('submit-quiz-btn');
+        const quizResults = document.getElementById('quiz-results');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const quizResultTitle = document.getElementById('quiz-result-title');
+        const quizResultMessage = document.getElementById('quiz-result-message');
+        const continueCourseBtn = document.getElementById('continue-course-btn');
+        const courseCompletion = document.getElementById('course-completion');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercent = document.getElementById('progress-percent');
+        const currentCourseEl = document.getElementById('current-course');
+        const userCodeEl = document.getElementById('user-code');
+        const lessonCounterEl = document.getElementById('lesson-counter');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalScoreBar = document.getElementById('final-score-bar');
+        const courseModulesEl = document.getElementById('course-modules');
+        const lessonContainerEl = document.getElementById('lesson-container');
+
+        // Initialize the dashboard
+        function initDashboard() {
+            // Set user code
+            userCodeEl.textContent = userData.code;
+            
+            // Set course title
+            currentCourseEl.textContent = currentCourse.title;
+            
+            // Set subject icon in header
+            const headerIcon = document.querySelector('header img');
+            headerIcon.nextElementSibling.classList.add(currentCourse.colorClass);
+            headerIcon.nextElementSibling.innerHTML = `<i class="fas ${currentCourse.icon}"></i>`;
+            
+            // Build course modules sidebar
+            buildCourseModules();
+            
+            if (userData.completed) {
+                showCourseCompletion();
+            } else {
+                loadLesson(userData.currentLesson);
+                updateProgress();
+            }
+        }
+
+        // Build the course modules sidebar
+        function buildCourseModules() {
+            courseModulesEl.innerHTML = '';
+            
+            const moduleTitle = document.createElement('div');
+            moduleTitle.className = 'font-medium text-gray-700 mb-2';
+            moduleTitle.textContent = currentCourse.title;
+            courseModulesEl.appendChild(moduleTitle);
+            
+            const nav = document.createElement('nav');
+            nav.className = 'space-y-1';
+            
+            currentCourse.lessons.forEach((lesson, index) => {
+                const lessonLink = document.createElement('a');
+                lessonLink.href = '#';
+                lessonLink.className = `block px-3 py-2 rounded-md text-sm font-medium ${index === userData.currentLesson ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`;
+                lessonLink.textContent = lesson.title;
+                
+                lessonLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (index !== userData.currentLesson) {
+                        userData.currentLesson = index;
+                        localStorage.setItem('skillcraft_user', JSON.stringify(userData));
+                        loadLesson(index);
+                        updateProgress();
+                    }
+                });
+                
+                nav.appendChild(lessonLink);
+            });
+            
+            courseModulesEl.appendChild(nav);
+        }
+
+        // Load a lesson
+        function loadLesson(lessonIndex) {
+            const lesson = currentCourse.lessons[lessonIndex];
+            
+            // Update lesson counter
+            lessonCounterEl.textContent = `Lesson ${lessonIndex + 1} of ${currentCourse.lessons.length}`;
+            
+            lessonTitleEl.textContent = lesson.title;
+            lessonVideoEl.src = `https://www.youtube.com/embed/${lesson.videoId}?rel=0`;
+            lessonNotesEl.innerHTML = lesson.notes;
+            
+            // Update next lesson button text for last lesson
+            if (lessonIndex === currentCourse.lessons.length - 1) {
+                nextLessonBtn.innerHTML = 'Final Quiz <i class="fas fa-arrow-right ml-2"></i>';
+            } else {
+                nextLessonBtn.innerHTML = 'Next Lesson <i class="fas fa-arrow-right ml-2"></i>';
+            }
+            
+            // Update previous button state
+            if (lessonIndex === 0) {
+                prevLessonBtn.disabled = true;
+            } else {
+                prevLessonBtn.disabled = false;
+            }
+            
+            // Hide quiz sections
+            quizSection.classList.add('hidden');
+            quizResults.classList.add('hidden');
+            
+            // Rebuild course modules to update active lesson
+            buildCourseModules();
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((userData.currentLesson + 1) / currentCourse.lessons.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+        }
+
+        // Show quiz for current lesson
+        function showQuiz() {
+            const lesson = currentCourse.lessons[userData.currentLesson];
+            
+            // Clear previous quiz
+            quizContainer.innerHTML = '';
+            
+            // Update quiz header if this is the final exam
+            const quizHeader = quizSection.querySelector('h2');
+            const quizDescription = quizSection.querySelector('p');
+            
+            if (userData.currentLesson === currentCourse.lessons.length - 1) {
+                quizHeader.textContent = 'Final Exam';
+                quizDescription.textContent = 'Test your understanding of the entire course';
+                submitQuizBtn.textContent = 'Submit Final Exam';
+            } else {
+                quizHeader.textContent = 'Lesson Quiz';
+                quizDescription.textContent = 'Test your understanding of the material';
+                submitQuizBtn.textContent = 'Submit Quiz';
+            }
+            
+            // Create quiz questions
+            const questions = userData.currentLesson === currentCourse.lessons.length - 1 
+                ? currentCourse.finalExam 
+                : lesson.quiz;
+            
+            questions.forEach((question, qIndex) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'mb-6';
+                questionEl.innerHTML = `
+                    <h3 class="text-lg font-medium mb-3">${qIndex + 1}. ${question.question}</h3>
+                    <div class="space-y-2" id="options-${qIndex}"></div>
+                `;
+                
+                const optionsContainer = questionEl.querySelector(`#options-${qIndex}`);
+                
+                question.options.forEach((option, oIndex) => {
+                    const optionEl = document.createElement('div');
+                    optionEl.className = 'quiz-option p-3 border border-gray-200 rounded-md cursor-pointer';
+                    optionEl.textContent = option;
+                    optionEl.dataset.qIndex = qIndex;
+                    optionEl.dataset.oIndex = oIndex;
+                    
+                    optionEl.addEventListener('click', function() {
+                        selectOption(this);
+                    });
+                    
+                    optionsContainer.appendChild(optionEl);
+                });
+                
+                quizContainer.appendChild(questionEl);
+            });
+            
+            // Show quiz section
+            quizSection.classList.remove('hidden');
+            window.scrollTo({ top: quizSection.offsetTop, behavior: 'smooth' });
+        }
+
+        // Select a quiz option
+        function selectOption(optionEl) {
+            const qIndex = optionEl.dataset.qIndex;
+            const oIndex = optionEl.dataset.oIndex;
+            
+            // Clear previous selection for this question
+            const options = document.querySelectorAll(`#options-${qIndex} .quiz-option`);
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select this option
+            optionEl.classList.add('selected');
+        }
+
+        // Submit quiz
+        function submitQuiz() {
+            const isFinalExam = userData.currentLesson === currentCourse.lessons.length - 1;
+            const questions = isFinalExam 
+                ? currentCourse.finalExam 
+                : currentCourse.lessons[userData.currentLesson].quiz;
+            
+            let correctAnswers = 0;
+            
+            questions.forEach((question, qIndex) => {
+                const selectedOption = document.querySelector(`#options-${qIndex} .selected`);
+                
+                if (selectedOption) {
+                    const oIndex = parseInt(selectedOption.dataset.oIndex);
+                    
+                    if (oIndex === question.correctAnswer) {
+                        correctAnswers++;
+                        selectedOption.classList.add('correct');
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`#options-${qIndex} .quiz-option:nth-child(${question.correctAnswer + 1})`);
+                        correctOption.classList.add('correct');
+                    }
+                } else {
+                    // No answer selected, show correct answer
+                    const correctOption = document.querySelector(`#options-${qIndex} .quiz-option:nth-child(${question.correctAnswer + 1})`);
+                    correctOption.classList.add('correct');
+                }
+            });
+            
+            // Calculate score
+            const score = Math.round((correctAnswers / questions.length) * 100);
+            
+            if (!isFinalExam) {
+                // Store lesson quiz score
+                userData.quizScores[userData.currentLesson] = score;
+            } else {
+                // Store final exam score and mark as completed
+                userData.finalScore = score;
+                userData.completed = true;
+            }
+            
+            localStorage.setItem('skillcraft_user', JSON.stringify(userData));
+            
+            // Show results
+            quizScoreEl.textContent = `${score}%`;
+            
+            if (isFinalExam) {
+                quizResultTitle.textContent = score >= 70 ? 'Congratulations!' : 'Course Completed!';
+                quizResultMessage.textContent = `You scored ${correctAnswers} out of ${questions.length} questions correctly on the final exam.`;
+                continueCourseBtn.textContent = 'View Certificate';
+            } else {
+                quizResultTitle.textContent = score >= 70 ? 'Well Done!' : 'Keep Practicing!';
+                quizResultMessage.textContent = `You scored ${correctAnswers} out of ${questions.length} questions correctly.`;
+                
+                if (score < 70) {
+                    quizResultMessage.textContent += ' You need at least 70% to proceed. Review the lesson and try again.';
+                    continueCourseBtn.disabled = true;
+                    continueCourseBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    continueCourseBtn.disabled = false;
+                    continueCourseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+            
+            // Show results section
+            quizResults.classList.remove('hidden');
+            submitQuizBtn.disabled = true;
+            window.scrollTo({ top: quizResults.offsetTop, behavior: 'smooth' });
+        }
+
+        // Show course completion
+        function showCourseCompletion() {
+            // Hide lesson and quiz sections
+            lessonContainerEl.classList.add('hidden');
+            quizSection.classList.add('hidden');
+            quizResults.classList.add('hidden');
+            
+            // Show course completion
+            finalScoreEl.textContent = `${userData.finalScore}%`;
+            finalScoreBar.style.width = `${userData.finalScore}%`;
+            courseCompletion.classList.remove('hidden');
+        }
+
+        // Event Listeners
+        nextLessonBtn.addEventListener('click', function() {
+            // Check if this is the final lesson
+            if (userData.currentLesson === currentCourse.lessons.length - 1) {
+                showQuiz();
+            } else {
+                showQuiz();
+            }
+        });
+
+        prevLessonBtn.addEventListener('click', function() {
+            if (userData.currentLesson > 0) {
+                userData.currentLesson--;
+                localStorage.setItem('skillcraft_user', JSON.stringify(userData));
+                loadLesson(userData.currentLesson);
+                updateProgress();
+            }
+        });
+
+        submitQuizBtn.addEventListener('click', function() {
+            submitQuiz();
+        });
+
+        continueCourseBtn.addEventListener('click', function() {
+            if (userData.completed) {
+                showCourseCompletion();
+            } else {
+                // Move to next lesson
+                userData.currentLesson++;
+                localStorage.setItem('skillcraft_user', JSON.stringify(userData));
+                
+                if (userData.currentLesson < currentCourse.lessons.length) {
+                    loadLesson(userData.currentLesson);
+                    updateProgress();
+                } else {
+                    showCourseCompletion();
+                }
+            }
+        });
+
+        // Initialize the dashboard
+        initDashboard();
+    </script>
 </body>
 </html>
