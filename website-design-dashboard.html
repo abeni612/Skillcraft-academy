@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillCraft Academy | Web Design & Development</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #4299e1;
+            --light: #ebf8ff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .sidebar {
+            transition: all 0.3s;
+        }
+        
+        .lesson-card {
+            transition: transform 0.2s;
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .quiz-option:hover {
+            background-color: var(--secondary);
+        }
+        
+        .correct {
+            background-color: #38a169 !important;
+        }
+        
+        .incorrect {
+            background-color: #e53e3e !important;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                z-index: 50;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <div class="md:hidden fixed top-4 left-4 z-30">
+        <button id="mobileMenuBtn" class="text-white focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+    
+    <!-- Overlay for mobile menu -->
+    <div id="overlay" class="overlay"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-4 shadow-lg z-20">
+        <div class="flex items-center mb-8">
+            <img src="https://via.placeholder.com/40" alt="SkillCraft Academy Logo" class="h-10 w-10 mr-2">
+            <h1 class="text-xl font-bold">SkillCraft Academy</h1>
+        </div>
+        <p class="text-sm text-gray-400 mb-6">"Learn, Build, Succeed."</p>
+        
+        <nav>
+            <ul class="space-y-2">
+                <li>
+                    <a href="#" class="nav-link active" data-section="home">
+                        <i class="fas fa-home mr-3"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="lessons">
+                        <i class="fas fa-book mr-3"></i> Lessons
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="quizzes">
+                        <i class="fas fa-question-circle mr-3"></i> Quizzes
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="final-test">
+                        <i class="fas fa-graduation-cap mr-3"></i> Final Test
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="progress">
+                        <i class="fas fa-chart-line mr-3"></i> Progress
+                    </a>
+                </li>
+                <li class="absolute bottom-4 left-4 right-4">
+                    <a href="#" class="nav-link text-red-400 hover:text-red-300">
+                        <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-64 p-6 min-h-screen">
+        <!-- Home Section -->
+        <section id="home" class="content-section active">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 text-blue-300">Website Design & Development Course</h1>
+                
+                <div class="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Welcome to Your Learning Journey!</h2>
+                    <p class="mb-4">This comprehensive course will take you from absolute beginner to professional web developer. You'll learn HTML, CSS, JavaScript, and practical skills to build real websites.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="text-blue-300 mb-2"><i class="fas fa-book-open text-2xl"></i></div>
+                            <h3 class="font-semibold mb-2">9 Lessons</h3>
+                            <p class="text-sm text-gray-400">Step-by-step learning path</p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="text-blue-300 mb-2"><i class="fas fa-question-circle text-2xl"></i></div>
+                            <h3 class="font-semibold mb-2">8 Quizzes</h3>
+                            <p class="text-sm text-gray-400">Reinforce your knowledge</p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="text-blue-300 mb-2"><i class="fas fa-project-diagram text-2xl"></i></div>
+                            <h3 class="font-semibold mb-2">2 Projects</h3>
+                            <p class="text-sm text-gray-400">Build real-world websites</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Course Overview</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">1</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">Introduction to Web Development</h3>
+                                <p class="text-sm text-gray-400">Learn the fundamentals of how the web works</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">2</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">HTML Basics</h3>
+                                <p class="text-sm text-gray-400">Master the structure of web pages</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">3</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">CSS Styling</h3>
+                                <p class="text-sm text-gray-400">Make your websites visually appealing</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">4</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">Responsive Design</h3>
+                                <p class="text-sm text-gray-400">Create sites that work on all devices</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">5</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">JavaScript Essentials</h3>
+                                <p class="text-sm text-gray-400">Add interactivity to your websites</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">6</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">DOM Manipulation</h3>
+                                <p class="text-sm text-gray-400">Dynamically update your web pages</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">7</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">Personal Website Project</h3>
+                                <p class="text-sm text-gray-400">Apply your skills to build a portfolio</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">8</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">Website Hosting</h3>
+                                <p class="text-sm text-gray-400">Deploy your sites to the world</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                                <span class="text-xs">9</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">Freelancing Tips</h3>
+                                <p class="text-sm text-gray-400">Prepare for real client work</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Getting Started</h2>
+                    <p class="mb-4">To begin your learning journey, click on the "Lessons" tab in the sidebar or the button below.</p>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition duration-200 flex items-center">
+                        <i class="fas fa-book-open mr-2"></i> Start Learning
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Lessons Section -->
+        <section id="lessons" class="content-section hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 text-blue-300">Course Lessons</h1>
+                <p class="mb-8 text-gray-400">Follow these lessons in order to build your web development skills step by step.</p>
+                
+                <div id="lessons-container" class="space-y-6">
+                    <!-- Lesson cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Single Lesson View -->
+        <section id="single-lesson" class="content-section hidden">
+            <div class="max-w-4xl mx-auto">
+                <button id="back-to-lessons" class="mb-4 text-blue-400 hover:text-blue-300 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Lessons
+                </button>
+                
+                <h1 id="lesson-title" class="text-3xl md:text-4xl font-bold mb-6 text-blue-300"></h1>
+                
+                <div class="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
+                    <div class="video-container mb-6 rounded-lg overflow-hidden">
+                        <iframe id="lesson-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Lesson Notes</h2>
+                    <div id="lesson-notes" class="space-y-4 mb-8">
+                        <!-- Notes will be inserted here -->
+                    </div>
+                    
+                    <button id="take-quiz-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition duration-200 flex items-center">
+                        <i class="fas fa-question-circle mr-2"></i> Take Quiz
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quizzes Section -->
+        <section id="quizzes" class="content-section hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 text-blue-300">Course Quizzes</h1>
+                <p class="mb-8 text-gray-400">Test your knowledge after each lesson with these quizzes.</p>
+                
+                <div id="quizzes-container" class="space-y-6">
+                    <!-- Quiz cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Single Quiz View -->
+        <section id="single-quiz" class="content-section hidden">
+            <div class="max-w-4xl mx-auto">
+                <button id="back-to-quizzes" class="mb-4 text-blue-400 hover:text-blue-300 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Quizzes
+                </button>
+                
+                <h1 id="quiz-title" class="text-3xl md:text-4xl font-bold mb-6 text-blue-300"></h1>
+                
+                <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <div id="quiz-container">
+                        <!-- Quiz questions will be inserted here -->
+                    </div>
+                    
+                    <div id="quiz-results" class="hidden">
+                        <h2 class="text-2xl font-semibold mb-4 text-blue-200">Quiz Results</h2>
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <span>Your Score:</span>
+                                <span id="quiz-score" class="font-bold"></span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-4">
+                                <div id="quiz-progress" class="bg-blue-600 h-4 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="quiz-feedback" class="mb-6">
+                            <!-- Feedback will be inserted here -->
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button id="retake-quiz" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition duration-200">
+                                Retake Quiz
+                            </button>
+                            <button id="next-lesson" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200">
+                                Next Lesson
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Final Test Section -->
+        <section id="final-test" class="content-section hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 text-blue-300">Final Test</h1>
+                
+                <div id="final-test-intro" class="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Comprehensive Assessment</h2>
+                    <p class="mb-4">This final test will evaluate your understanding of all concepts covered in the course. It contains 15 questions selected from all lessons.</p>
+                    <p class="mb-6 font-medium">You need to score at least 70% to pass the course.</p>
+                    
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+                        <span>Time to complete: Approximately 20-30 minutes</span>
+                    </div>
+                    
+                    <button id="start-final-test" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition duration-200">
+                        Start Final Test
+                    </button>
+                </div>
+                
+                <div id="final-test-container" class="hidden bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <!-- Final test questions will be inserted here -->
+                </div>
+                
+                <div id="final-test-results" class="hidden bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Final Test Results</h2>
+                    <div id="final-test-score-container" class="mb-6">
+                        <!-- Score will be inserted here -->
+                    </div>
+                    
+                    <div id="final-test-feedback" class="mb-6">
+                        <!-- Feedback will be inserted here -->
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button id="retake-final-test" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition duration-200">
+                            Retake Test
+                        </button>
+                        <button id="view-certificate" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200 hidden">
+                            View Certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Progress Section -->
+        <section id="progress" class="content-section hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 text-blue-300">Your Progress</h1>
+                
+                <div class="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-6 text-blue-200">Course Completion</h2>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+                        <div class="relative w-32 h-32 mb-4 md:mb-0">
+                            <svg class="w-full h-full" viewBox="0 0 100 100">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+                                <circle class="text-blue-500 progress-ring__circle" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" id="progress-ring" />
+                                <text x="50" y="50" font-family="Arial" font-size="20" text-anchor="middle" dy=".3em" fill="#ffffff" id="progress-text">0%</text>
+                            </svg>
+                        </div>
+                        
+                        <div class="flex-1 md:pl-8">
+                            <div class="flex items-center justify-between mb-2">
+                                <span>Lessons Completed:</span>
+                                <span id="lessons-completed" class="font-bold">0/9</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-3 mb-4">
+                                <div id="lessons-progress" class="bg-blue-600 h-3 rounded-full" style="width: 0%"></div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mb-2">
+                                <span>Quizzes Completed:</span>
+                                <span id="quizzes-completed" class="font-bold">0/8</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-3 mb-4">
+                                <div id="quizzes-progress" class="bg-blue-600 h-3 rounded-full" style="width: 0%"></div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span>Final Test:</span>
+                                <span id="final-test-status" class="font-bold">Not Taken</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-6 text-blue-200">Lesson Progress</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-1-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>1. Introduction to Web Development</span>
+                            </div>
+                            <div id="quiz-1-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-2-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>2. HTML Basics</span>
+                            </div>
+                            <div id="quiz-2-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-3-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>3. CSS Styling</span>
+                            </div>
+                            <div id="quiz-3-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-4-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>4. Responsive Design</span>
+                            </div>
+                            <div id="quiz-4-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-5-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>5. JavaScript Essentials</span>
+                            </div>
+                            <div id="quiz-5-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-6-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>6. DOM Manipulation</span>
+                            </div>
+                            <div id="quiz-6-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-7-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>7. Personal Website Project</span>
+                            </div>
+                            <div id="quiz-7-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-8-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>8. Website Hosting</span>
+                            </div>
+                            <div id="quiz-8-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div id="lesson-9-status" class="w-6 h-6 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                    <i class="fas fa-lock text-xs"></i>
+                                </div>
+                                <span>9. Freelancing Tips</span>
+                            </div>
+                            <div id="quiz-9-score" class="text-gray-400 text-sm">Not taken</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-200">Final Test Status</h2>
+                    <div id="final-test-progress" class="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
+                        <div class="flex items-center">
+                            <div id="final-test-status-icon" class="w-8 h-8 rounded-full bg-gray-600 mr-3 flex items-center justify-center">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Final Test</div>
+                                <div id="final-test-score-text" class="text-sm text-gray-400">Not taken</div>
+                            </div>
+                        </div>
+                        <div id="final-test-pass-fail" class="text-sm font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Course Data
+        const courseData = {
+            lessons: [
+                {
+                    id: 1,
+                    title: "Lesson 1: Introduction to Web Development",
+                    video: "https://www.youtube.com/embed/3JluqTojuME",
+                    notes: [
+                        "A website is a collection of web pages that are typically identified with a common domain name and published on at least one web server.",
+                        "Frontend refers to the client-side part of a website that users interact with directly (HTML, CSS, JavaScript). Backend refers to the server-side that handles data storage, processing, and business logic.",
+                        "HTML (HyperText Markup Language) provides the structure of a webpage. CSS (Cascading Style Sheets) controls the presentation and layout. JavaScript adds interactivity and dynamic behavior.",
+                        "Web browsers (Chrome, Firefox, Safari) interpret HTML, CSS, and JavaScript to display web pages.",
+                        "The web works through a client-server model where browsers (clients) request resources from web servers using HTTP/HTTPS protocols."
+                    ],
+                    quiz: {
+                        title: "Quiz 1: Introduction to Web Development",
+                        questions: [
+                            {
+                                question: "What does HTML stand for?",
+                                options: [
+                                    "Hyperlinks and Text Markup Language",
+                                    "Home Tool Markup Language",
+                                    "HyperText Markup Language",
+                                    "Hyper Transfer Markup Language"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "Which of these is responsible for the visual styling of a website?",
+                                options: [
+                                    "HTML",
+                                    "CSS",
+                                    "JavaScript",
+                                    "PHP"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "What is the main purpose of JavaScript in web development?",
+                                options: [
+                                    "To structure the content of a webpage",
+                                    "To style the visual presentation",
+                                    "To add interactivity and dynamic behavior",
+                                    "To communicate with databases"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "Which component runs on the server-side in web development?",
+                                options: [
+                                    "Frontend",
+                                    "Backend",
+                                    "Browser",
+                                    "CSS"
+                                ],
+                                answer: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 2,
+                    title: "Lesson 2: HTML Basics - Tags, Elements & Structure",
+                    video: "https://www.youtube.com/embed/UB1O30fR-EE",
+                    notes: [
+                        "HTML documents are made up of elements that define the structure and content of a webpage.",
+                        "Basic HTML document structure includes: <!DOCTYPE html>, <html>, <head>, and <body> tags.",
+                        "Common HTML elements: <h1>-<h6> for headings, <p> for paragraphs, <a> for links, <img> for images, <ul>/<ol> for lists, and <div>/<span> for grouping content.",
+                        "HTML tags usually come in pairs (opening and closing) but some are self-closing like <img> and <br>.",
+                        "Attributes provide additional information about elements (e.g., href in <a>, src in <img>).",
+                        "Semantic HTML elements like <header>, <footer>, <article>, and <section> describe the meaning of content to browsers and developers."
+                    ],
+                    quiz: {
+                        title: "Quiz 2: HTML Basics",
+                        questions: [
+                            {
+                                question: "Which tag is used to create a hyperlink?",
+                                options: [
+                                    "<link>",
+                                    "<a>",
+                                    "<href>",
+                                    "<hyperlink>"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "What is the correct HTML for inserting an image?",
+                                options: [
+                                    "<img src='image.jpg' alt='My Image'>",
+                                    "<image src='image.jpg'>",
+                                    "<img href='image.jpg' alt='My Image'>",
+                                    "<img>image.jpg</img>"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "Which of these elements is a block-level element?",
+                                options: [
+                                    "<span>",
+                                    "<div>",
+                                    "<a>",
+                                    "<img>"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "What does the 'alt' attribute in an <img> tag provide?",
+                                options: [
+                                    "Alternative text for screen readers",
+                                    "Alignment of the image",
+                                    "Alternate image source",
+                                    "Alternative styling"
+                                ],
+                                answer: 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 3,
+                    title: "Lesson 3: CSS Styling - Colors, Layout & Flexbox",
+                    video: "https://www.youtube.com/embed/yfoY53QXEnI",
+                    notes: [
+                        "CSS (Cascading Style Sheets) is used to style and layout web pages.",
+                        "CSS can be added inline, internally in a <style> tag, or externally in a .css file (recommended).",
+                        "Basic CSS properties include color, background-color, font-family, font-size, margin, padding, and border.",
+                        "The CSS box model consists of content, padding, border, and margin.",
+                        "Flexbox is a layout model that allows you to design flexible responsive layouts without using float or positioning.",
+                        "Flexbox properties include display: flex, flex-direction, justify-content, align-items, and flex-wrap.",
+                        "CSS selectors target HTML elements by tag name, class (.), id (#), attribute, or relationship."
+                    ],
+                    quiz: {
+                        title: "Quiz 3: CSS Styling",
+                        questions: [
+                            {
+                                question: "Which CSS property changes the text color?",
+                                options: [
+                                    "text-color",
+                                    "font-color",
+                                    "color",
+                                    "text-style"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "What does CSS stand for?",
+                                options: [
+                                    "Computer Style Sheets",
+                                    "Creative Style Sheets",
+                                    "Cascading Style Sheets",
+                                    "Colorful Style Sheets"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "Which property is used to change the font of an element?",
+                                options: [
+                                    "font-family",
+                                    "font-style",
+                                    "text-font",
+                                    "font-type"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "What is the correct way to select an element with id='header'?",
+                                options: [
+                                    ".header",
+                                    "*header",
+                                    "#header",
+                                    "header"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "Which flexbox property aligns items vertically?",
+                                options: [
+                                    "justify-content",
+                                    "align-content",
+                                    "align-items",
+                                    "flex-align"
+                                ],
+                                answer: 2
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 4,
+                    title: "Lesson 4: Responsive Design & Media Queries",
+                    video: "https://www.youtube.com/embed/srvUrASNj0s",
+                    notes: [
+                        "Responsive web design ensures websites work well on all devices (desktops, tablets, phones).",
+                        "Viewport meta tag (<meta name='viewport' content='width=device-width, initial-scale=1.0'>) is essential for mobile responsiveness.",
+                        "Media queries allow you to apply CSS rules based on device characteristics (width, height, orientation).",
+                        "Common breakpoints: 576px (phones), 768px (tablets), 992px (small desktops), 1200px (large desktops).",
+                        "Mobile-first approach means designing for mobile first, then adding enhancements for larger screens.",
+                        "Flexible grids and images (using % or max-width: 100%) are key to responsive layouts.",
+                        "CSS frameworks like Bootstrap provide responsive grid systems."
+                    ],
+                    quiz: {
+                        title: "Quiz 4: Responsive Design",
+                        questions: [
+                            {
+                                question: "What is the purpose of the viewport meta tag?",
+                                options: [
+                                    "To set the website's title",
+                                    "To control the page's dimensions and scaling",
+                                    "To link to external CSS files",
+                                    "To define character encoding"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "Which CSS feature is essential for creating responsive designs?",
+                                options: [
+                                    "Media queries",
+                                    "CSS variables",
+                                    "Animations",
+                                    "Transforms"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "What does 'mobile-first' approach mean?",
+                                options: [
+                                    "Designing for desktop first then scaling down",
+                                    "Designing for mobile first then scaling up",
+                                    "Creating separate mobile and desktop sites",
+                                    "Using only mobile-friendly features"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "Which unit is most flexible for responsive layouts?",
+                                options: [
+                                    "px (pixels)",
+                                    "pt (points)",
+                                    "% (percentage)",
+                                    "in (inches)"
+                                ],
+                                answer: 2
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 5,
+                    title: "Lesson 5: JavaScript Essentials for Web",
+                    video: "https://www.youtube.com/embed/W6NZfCO5SIk",
+                    notes: [
+                        "JavaScript is a programming language that adds interactivity to websites.",
+                        "Variables store data (let, const, var). Data types include string, number, boolean, object, null, and undefined.",
+                        "Operators perform operations on variables (arithmetic, assignment, comparison, logical).",
+                        "Control structures include if/else statements, switch cases, and loops (for, while, do while).",
+                        "Functions are reusable blocks of code that perform specific tasks.",
+                        "Arrays store multiple values in a single variable. Objects store key-value pairs.",
+                        "JavaScript can manipulate HTML elements (DOM manipulation) and respond to user events."
+                    ],
+                    quiz: {
+                        title: "Quiz 5: JavaScript Essentials",
+                        questions: [
+                            {
+                                question: "Which keyword is used to declare a variable in modern JavaScript?",
+                                options: [
+                                    "var",
+                                    "let",
+                                    "variable",
+                                    "Both let and var"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "What will '5' + 2 return in JavaScript?",
+                                options: [
+                                    "7",
+                                    "52",
+                                    "Error",
+                                    "undefined"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "Which of these is NOT a JavaScript data type?",
+                                options: [
+                                    "string",
+                                    "number",
+                                    "boolean",
+                                    "character"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "How do you write an if statement in JavaScript?",
+                                options: [
+                                    "if x == 5 then",
+                                    "if (x = 5)",
+                                    "if (x == 5)",
+                                    "if x = 5"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "Which method adds an item to the end of an array?",
+                                options: [
+                                    "push()",
+                                    "pop()",
+                                    "shift()",
+                                    "unshift()"
+                                ],
+                                answer: 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 6,
+                    title: "Lesson 6: DOM Manipulation & Events",
+                    video: "https://www.youtube.com/embed/5fb2aPlgoys",
+                    notes: [
+                        "The Document Object Model (DOM) is a programming interface for web documents that represents the page as nodes and objects.",
+                        "JavaScript can access and manipulate the DOM using methods like getElementById(), querySelector(), and getElementsByClassName().",
+                        "Common DOM manipulations include changing element content (innerHTML, textContent), styles (style.property), and attributes (setAttribute).",
+                        "Event listeners respond to user interactions like clicks, mouse movements, keyboard input, and form submissions.",
+                        "Event propagation has two phases: capturing (top-down) and bubbling (bottom-up).",
+                        "Event delegation is a technique to handle events efficiently by attaching a single listener to a parent element."
+                    ],
+                    quiz: {
+                        title: "Quiz 6: DOM Manipulation",
+                        questions: [
+                            {
+                                question: "What does DOM stand for?",
+                                options: [
+                                    "Document Object Model",
+                                    "Data Object Model",
+                                    "Display Object Method",
+                                    "Document Orientation Mode"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "Which method selects the first element with class 'item'?",
+                                options: [
+                                    "document.getElementById('item')",
+                                    "document.querySelector('.item')",
+                                    "document.getElementsByClassName('item')[0]",
+                                    "Both B and C"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "Which property changes the HTML content of an element?",
+                                options: [
+                                    "textContent",
+                                    "innerHTML",
+                                    "value",
+                                    "Both A and B"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "How do you attach a click event listener to a button?",
+                                options: [
+                                    "button.addEventListener('click', handler)",
+                                    "button.onclick = handler",
+                                    "button.click(handler)",
+                                    "Both A and B"
+                                ],
+                                answer: 3
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 7,
+                    title: "Lesson 7: Real Project - Building a Personal Website",
+                    video: "https://www.youtube.com/embed/agmkh7jeTeY",
+                    notes: [
+                        "Planning is crucial: define purpose, target audience, and content structure before coding.",
+                        "Create a wireframe or sketch of your site layout to visualize the structure.",
+                        "Set up project files with organized folder structure (e.g., index.html, css/, js/, images/).",
+                        "Build the HTML structure first, then add CSS styling, and finally JavaScript functionality.",
+                        "Key sections for a personal website: header with navigation, hero section, about me, projects/portfolio, skills, and contact information.",
+                        "Make sure to implement responsive design principles for all screen sizes.",
+                        "Test your website on different devices and browsers to ensure compatibility."
+                    ],
+                    quiz: {
+                        title: "Quiz 7: Personal Website Project",
+                        questions: [
+                            {
+                                question: "What should you do before starting to code your website?",
+                                options: [
+                                    "Plan the structure and content",
+                                    "Choose color schemes",
+                                    "Write all the JavaScript",
+                                    "Both A and B"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "Which section is NOT typically part of a personal website?",
+                                options: [
+                                    "About Me",
+                                    "Portfolio/Projects",
+                                    "E-commerce store",
+                                    "Contact Information"
+                                ],
+                                answer: 2
+                            },
+                            {
+                                question: "What is the purpose of a wireframe?",
+                                options: [
+                                    "To visualize the site layout",
+                                    "To write the HTML code",
+                                    "To choose color schemes",
+                                    "To test JavaScript functionality"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "Which should you build first when creating a website?",
+                                options: [
+                                    "HTML structure",
+                                    "CSS styling",
+                                    "JavaScript functionality",
+                                    "Database connections"
+                                ],
+                                answer: 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 8,
+                    title: "Lesson 8: Hosting a Website (GitHub Pages / Netlify)",
+                    video: "https://www.youtube.com/embed/SKXkC4SqtRk",
+                    notes: [
+                        "Web hosting makes your website accessible on the internet by storing files on a server.",
+                        "GitHub Pages offers free hosting for static websites directly from a GitHub repository.",
+                        "To use GitHub Pages: create a repo named username.github.io, push your code, and enable GitHub Pages in settings.",
+                        "Netlify provides free hosting with additional features like continuous deployment, forms, and serverless functions.",
+                        "To deploy on Netlify: drag and drop your project folder or connect to a Git repository.",
+                        "Custom domains can be added to both GitHub Pages and Netlify for a professional web address.",
+                        "Always test your live website thoroughly after deployment."
+                    ],
+                    quiz: {
+                        title: "Quiz 8: Website Hosting",
+                        questions: [
+                            {
+                                question: "Which hosting service is free with GitHub repositories?",
+                                options: [
+                                    "GitHub Pages",
+                                    "Netlify",
+                                    "AWS S3",
+                                    "Firebase Hosting"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "What is required to use GitHub Pages?",
+                                options: [
+                                    "A paid GitHub account",
+                                    "A repository named username.github.io",
+                                    "A custom domain",
+                                    "A server configuration file"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "Which feature is NOT provided by Netlify?",
+                                options: [
+                                    "Continuous deployment",
+                                    "Serverless functions",
+                                    "Form handling",
+                                    "Database management"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "What should you do after deploying your website?",
+                                options: [
+                                    "Test it thoroughly",
+                                    "Share the link",
+                                    "Monitor performance",
+                                    "All of the above"
+                                ],
+                                answer: 3
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 9,
+                    title: "Lesson 9: Preparing for Real Clients / Freelancing Tips",
+                    video: "https://www.youtube.com/embed/YM4l_5hQ6d4",
+                    notes: [
+                        "Build a strong portfolio showcasing your best work with case studies explaining your process.",
+                        "Set clear rates and boundaries (payment terms, revision policy, project scope).",
+                        "Use contracts for every project to protect yourself and the client.",
+                        "Communicate professionally and regularly with clients to manage expectations.",
+                        "Start with smaller projects to build experience and testimonials before taking on larger jobs.",
+                        "Learn to say no to projects that don't align with your skills or values.",
+                        "Continuously improve your skills and stay updated with web technologies.",
+                        "Network with other developers and potential clients through social media and local meetups."
+                    ],
+                    quiz: {
+                        title: "Quiz 9: Freelancing Tips",
+                        questions: [
+                            {
+                                question: "What is the most important asset for getting freelance clients?",
+                                options: [
+                                    "A strong portfolio",
+                                    "Low prices",
+                                    "Many social media followers",
+                                    "A fancy website"
+                                ],
+                                answer: 0
+                            },
+                            {
+                                question: "Why is a contract important for freelance work?",
+                                options: [
+                                    "To protect both you and the client",
+                                    "To make the project official",
+                                    "To define project scope and payment terms",
+                                    "All of the above"
+                                ],
+                                answer: 3
+                            },
+                            {
+                                question: "What should you do when starting as a freelancer?",
+                                options: [
+                                    "Take on only large projects",
+                                    "Start with smaller projects to build experience",
+                                    "Work for free to build portfolio",
+                                    "Only accept projects with high pay"
+                                ],
+                                answer: 1
+                            },
+                            {
+                                question: "How should you communicate with clients?",
+                                options: [
+                                    "Only at project start and finish",
+                                    "Regularly and professionally",
+                                    "Only when problems arise",
+                                    "Through social media DMs only"
+                                ],
+                                answer: 1
+                            }
+                        ]
+                    }
+                }
+            ],
+            finalTest: {
+                title: "Final Test: Web Design & Development",
+                questions: [
+                    {
+                        question: "Which HTML tag is used to define the structure of an HTML document?",
+                        options: [
+                            "<structure>",
+                            "<html>",
+                            "<body>",
+                            "<document>"
+                        ],
+                        answer: 1,
+                        lesson: 1
+                    },
+                    {
+                        question: "What CSS property controls the space between elements?",
+                        options: [
+                            "padding",
+                            "margin",
+                            "border",
+                            "spacing"
+                        ],
+                        answer: 1,
+                        lesson: 3
+                    },
+                    {
+                        question: "Which JavaScript method converts a string to a number?",
+                        options: [
+                            "parseInt()",
+                            "toString()",
+                            "toNumber()",
+                            "convert()"
+                        ],
+                        answer: 0,
+                        lesson: 5
+                    },
+                    {
+                        question: "What is the purpose of the viewport meta tag?",
+                        options: [
+                            "To define the website title",
+                            "To make the page responsive on mobile devices",
+                            "To link to external CSS files",
+                            "To specify character encoding"
+                        ],
+                        answer: 1,
+                        lesson: 4
+                    },
+                    {
+                        question: "Which HTML5 element is used for side content like a sidebar?",
+                        options: [
+                            "<sidebar>",
+                            "<aside>",
+                            "<section>",
+                            "<div>"
+                        ],
+                        answer: 1,
+                        lesson: 2
+                    },
+                    {
+                        question: "What does the 'C' in CSS stand for?",
+                        options: [
+                            "Computer",
+                            "Creative",
+                            "Cascading",
+                            "Colorful"
+                        ],
+                        answer: 2,
+                        lesson: 3
+                    },
+                    {
+                        question: "Which method selects all elements with class 'item'?",
+                        options: [
+                            "document.querySelector('.item')",
+                            "document.querySelectorAll('.item')",
+                            "document.getElementById('item')",
+                            "document.getElementsByTagName('item')"
+                        ],
+                        answer: 1,
+                        lesson: 6
+                    },
+                    {
+                        question: "What is the recommended first step when building a website?",
+                        options: [
+                            "Write the HTML",
+                            "Plan the structure and content",
+                            "Choose color schemes",
+                            "Write JavaScript functions"
+                        ],
+                        answer: 1,
+                        lesson: 7
+                    },
+                    {
+                        question: "Which hosting service is free with GitHub repositories?",
+                        options: [
+                            "Netlify",
+                            "GitHub Pages",
+                            "AWS S3",
+                            "Firebase Hosting"
+                        ],
+                        answer: 1,
+                        lesson: 8
+                    },
+                    {
+                        question: "What is the most important asset for getting freelance clients?",
+                        options: [
+                            "A strong portfolio",
+                            "Low prices",
+                            "Many social media followers",
+                            "A fancy website"
+                        ],
+                        answer: 0,
+                        lesson: 9
+                    },
+                    {
+                        question: "Which CSS unit is relative to the font-size of the element?",
+                        options: [
+                            "px",
+                            "em",
+                            "pt",
+                            "in"
+                        ],
+                        answer: 1,
+                        lesson: 3
+                    },
+                    {
+                        question: "What does the 'D' in DOM stand for?",
+                        options: [
+                            "Data",
+                            "Document",
+                            "Dynamic",
+                            "Display"
+                        ],
+                        answer: 1,
+                        lesson: 6
+                    },
+                    {
+                        question: "Which JavaScript keyword declares a block-scoped variable?",
+                        options: [
+                            "var",
+                            "let",
+                            "const",
+                            "Both let and const"
+                        ],
+                        answer: 3,
+                        lesson: 5
+                    },
+                    {
+                        question: "What is the mobile-first approach in responsive design?",
+                        options: [
+                            "Designing for desktop first then scaling down",
+                            "Designing for mobile first then scaling up",
+                            "Creating separate mobile and desktop sites",
+                            "Using only mobile-friendly features"
+                        ],
+                        answer: 1,
+                        lesson: 4
+                    },
+                    {
+                        question: "Why is a contract important for freelance work?",
+                        options: [
+                            "To protect both you and the client",
+                            "To make the project official",
+                            "To define project scope and payment terms",
+                            "All of the above"
+                        ],
+                        answer: 3,
+                        lesson: 9
+                    }
+                ],
+                passingScore: 70
+            }
+        };
+
+        // User Progress Data
+        let userProgress = {
+            completedLessons: [],
+            quizScores: {},
+            finalTest: {
+                taken: false,
+                score: 0,
+                passed: false
+            }
+        };
+
+        // Load user progress from localStorage
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('webDevCourseProgress');
+            if (savedProgress) {
+                userProgress = JSON.parse(savedProgress);
+            }
+            updateProgressUI();
+        }
+
+        // Save user progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('webDevCourseProgress', JSON.stringify(userProgress));
+            updateProgressUI();
+        }
+
+        // Update progress UI elements
+        function updateProgressUI() {
+            // Update progress ring
+            const totalLessons = courseData.lessons.length;
+            const completedCount = userProgress.completedLessons.length;
+            const progressPercent = Math.round((completedCount / totalLessons) * 100);
+            
+            const progressRing = document.getElementById('progress-ring');
+            const circumference = 2 * Math.PI * 40;
+            const offset = circumference - (progressPercent / 100) * circumference;
+            
+            progressRing.style.strokeDasharray = circumference + ' ' + circumference;
+            progressRing.style.strokeDashoffset = offset;
+            document.getElementById('progress-text').textContent = `${progressPercent}%`;
+            
+            // Update lesson progress
+            document.getElementById('lessons-completed').textContent = `${completedCount}/${totalLessons}`;
+            document.getElementById('lessons-progress').style.width = `${progressPercent}%`;
+            
+            // Update quiz progress
+            const quizCount = Object.keys(userProgress.quizScores).length;
+            const quizPercent = Math.round((quizCount / totalLessons) * 100);
+            document.getElementById('quizzes-completed').textContent = `${quizCount}/${totalLessons}`;
+            document.getElementById('quizzes-progress').style.width = `${quizPercent}%`;
+            
+            // Update final test status
+            const finalTestStatus = document.getElementById('final-test-status');
+            if (userProgress.finalTest.taken) {
+                finalTestStatus.textContent = userProgress.finalTest.passed ? 'Passed' : 'Failed';
+                finalTestStatus.className = userProgress.finalTest.passed ? 'font-bold text-green-400' : 'font-bold text-red-400';
+            } else {
+                finalTestStatus.textContent = 'Not Taken';
+                finalTestStatus.className = 'font-bold text-gray-400';
+            }
+            
+            // Update lesson status indicators
+            courseData.lessons.forEach(lesson => {
+                const lessonStatus = document.getElementById(`lesson-${lesson.id}-status`);
+                const quizScore = document.getElementById(`quiz-${lesson.id}-score`);
+                
+                if (userProgress.completedLessons.includes(lesson.id)) {
+                    lessonStatus.innerHTML = '<i class="fas fa-check text-xs"></i>';
+                    lessonStatus.className = 'w-6 h-6 rounded-full bg-green-600 mr-3 flex items-center justify-center';
+                } else {
+                    lessonStatus.innerHTML = userProgress.completedLessons.length >= lesson.id - 1 ? '<i class="fas fa-unlock text-xs"></i>' : '<i class="fas fa-lock text-xs"></i>';
+                    lessonStatus.className = `w-6 h-6 rounded-full ${userProgress.completedLessons.length >= lesson.id - 1 ? 'bg-blue-600' : 'bg-gray-600'} mr-3 flex items-center justify-center`;
+                }
+                
+                if (userProgress.quizScores[lesson.id]) {
+                    quizScore.textContent = `${userProgress.quizScores[lesson.id]}%`;
+                    quizScore.className = userProgress.quizScores[lesson.id] >= 70 ? 'text-green-400 text-sm' : 'text-red-400 text-sm';
+                } else {
+                    quizScore.textContent = 'Not taken';
+                    quizScore.className = 'text-gray-400 text-sm';
+                }
+            });
+            
+            // Update final test progress card
+            const finalTestStatusIcon = document.getElementById('final-test-status-icon');
+            const finalTestScoreText = document.getElementById('final-test-score-text');
+            const finalTestPassFail = document.getElementById('final-test-pass-fail');
+            
+            if (userProgress.finalTest.taken) {
+                finalTestStatusIcon.innerHTML = userProgress.finalTest.passed ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>';
+                finalTestStatusIcon.className = `w-8 h-8 rounded-full ${userProgress.finalTest.passed ? 'bg-green-600' : 'bg-red-600'} mr-3 flex items-center justify-center`;
+                finalTestScoreText.textContent = `Score: ${userProgress.finalTest.score}%`;
+                finalTestPassFail.textContent = userProgress.finalTest.passed ? 'Passed' : 'Failed';
+                finalTestPassFail.className = userProgress.finalTest.passed ? 'text-green-400' : 'text-red-400';
+                
+                if (userProgress.finalTest.passed) {
+                    document.getElementById('view-certificate').classList.remove('hidden');
+                }
+            } else {
+                finalTestStatusIcon.innerHTML = '<i class="fas fa-lock"></i>';
+                finalTestStatusIcon.className = 'w-8 h-8 rounded-full bg-gray-600 mr-3 flex items-center justify-center';
+                finalTestScoreText.textContent = 'Not taken';
+                finalTestPassFail.textContent = '';
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user progress
+            loadProgress();
+            
+            // Setup mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+            
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Setup navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    
+                    // Show the selected section
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.remove('hidden');
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    
+                    // Load specific content if needed
+                    if (sectionId === 'lessons') {
+                        loadLessons();
+                    } else if (sectionId === 'quizzes') {
+                        loadQuizzes();
+                    }
+                });
+            });
+            
+            // Load lessons on initial page load if on lessons section
+            if (window.location.hash === '#lessons') {
+                document.getElementById('lessons').classList.remove('hidden');
+                document.querySelector('[data-section="lessons"]').classList.add('active');
+                document.querySelector('[data-section="home"]').classList.remove('active');
+                loadLessons();
+            } else if (window.location.hash === '#quizzes') {
+                document.getElementById('quizzes').classList.remove('hidden');
+                document.querySelector('[data-section="quizzes"]').classList.add('active');
+                document.querySelector('[data-section="home"]').classList.remove('active');
+                loadQuizzes();
+            } else if (window.location.hash === '#final-test') {
+                document.getElementById('final-test').classList.remove('hidden');
+                document.querySelector('[data-section="final-test"]').classList.add('active');
+                document.querySelector('[data-section="home"]').classList.remove('active');
+            } else if (window.location.hash === '#progress') {
+                document.getElementById('progress').classList.remove('hidden');
+                document.querySelector('[data-section="progress"]').classList.add('active');
+                document.querySelector('[data-section="home"]').classList.remove('active');
+            }
+            
+            // Load lessons list
+            function loadLessons() {
+                const container = document.getElementById('lessons-container');
+                container.innerHTML = '';
+                
+                courseData.lessons.forEach((lesson, index) => {
+                    const isCompleted = userProgress.completedLessons.includes(lesson.id);
+                    const isUnlocked = index === 0 || userProgress.completedLessons.includes(lesson.id - 1);
+                    
+                    const lessonCard = document.createElement('div');
+                    lessonCard.className = `lesson-card bg-gray-800 rounded-lg p-6 shadow-lg ${isUnlocked ? 'cursor-pointer hover:shadow-xl' : 'opacity-60'}`;
+                    
+                    if (isUnlocked) {
+                        lessonCard.addEventListener('click', () => viewLesson(lesson.id));
+                    }
+                    
+                    lessonCard.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="w-10 h-10 rounded-full ${isCompleted ? 'bg-green-600' : (isUnlocked ? 'bg-blue-600' : 'bg-gray-600')} flex items-center justify-center">
+                                    ${isCompleted ? '<i class="fas fa-check"></i>' : (isUnlocked ? (index + 1) : '<i class="fas fa-lock"></i>')}
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h2 class="text-xl font-semibold mb-2 ${isUnlocked ? 'text-blue-300' : 'text-gray-400'}">${lesson.title}</h2>
+                                <p class="text-sm text-gray-400">${isUnlocked ? 'Click to view lesson' : 'Complete previous lesson to unlock'}</p>
+                            </div>
+                            ${isCompleted ? '<div class="ml-4 text-green-400"><i class="fas fa-check-circle text-xl"></i></div>' : ''}
+                        </div>
+                    `;
+                    
+                    container.appendChild(lessonCard);
+                });
+            }
+            
+            // View a single lesson
+            function viewLesson(lessonId) {
+                const lesson = courseData.lessons.find(l => l.id === lessonId);
+                if (!lesson) return;
+                
+                document.getElementById('lesson-title').textContent = lesson.title;
+                document.getElementById('lesson-video').src = lesson.video;
+                
+                const notesContainer = document.getElementById('lesson-notes');
+                notesContainer.innerHTML = '';
+                
+                lesson.notes.forEach(note => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'flex items-start';
+                    noteElement.innerHTML = `
+                        <div class="flex-shrink-0 mt-1 mr-3">
+                            <div class="w-4 h-4 rounded-full bg-blue-500"></div>
+                        </div>
+                        <p>${note}</p>
+                    `;
+                    notesContainer.appendChild(noteElement);
+                });
+                
+                // Set up quiz button
+                const quizBtn = document.getElementById('take-quiz-btn');
+                quizBtn.onclick = function() {
+                    viewQuiz(lesson.id);
+                };
+                
+                // Show single lesson view
+                document.getElementById('lessons').classList.add('hidden');
+                document.getElementById('single-lesson').classList.remove('hidden');
+                
+                // Mark lesson as completed if not already
+                if (!userProgress.completedLessons.includes(lesson.id)) {
+                    userProgress.completedLessons.push(lesson.id);
+                    saveProgress();
+                }
+            }
+            
+            // Back to lessons button
+            document.getElementById('back-to-lessons').addEventListener('click', function() {
+                document.getElementById('single-lesson').classList.add('hidden');
+                document.getElementById('lessons').classList.remove('hidden');
+                loadLessons();
+            });
+            
+            // Load quizzes list
+            function loadQuizzes() {
+                const container = document.getElementById('quizzes-container');
+                container.innerHTML = '';
+                
+                courseData.lessons.forEach((lesson, index) => {
+                    const isCompleted = userProgress.completedLessons.includes(lesson.id);
+                    const quizTaken = userProgress.quizScores.hasOwnProperty(lesson.id);
+                    const isUnlocked = index === 0 || userProgress.completedLessons.includes(lesson.id - 1);
+                    
+                    const quizCard = document.createElement('div');
+                    quizCard.className = `lesson-card bg-gray-800 rounded-lg p-6 shadow-lg ${isUnlocked ? 'cursor-pointer hover:shadow-xl' : 'opacity-60'}`;
+                    
+                    if (isUnlocked) {
+                        quizCard.addEventListener('click', () => viewQuiz(lesson.id));
+                    }
+                    
+                    quizCard.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="w-10 h-10 rounded-full ${quizTaken ? (userProgress.quizScores[lesson.id] >= 70 ? 'bg-green-600' : 'bg-red-600') : (isUnlocked ? 'bg-blue-600' : 'bg-gray-600')} flex items-center justify-center">
+                                    ${quizTaken ? userProgress.quizScores[lesson.id] + '%' : (isUnlocked ? '<i class="fas fa-question"></i>' : '<i class="fas fa-lock"></i>')}
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h2 class="text-xl font-semibold mb-2 ${isUnlocked ? 'text-blue-300' : 'text-gray-400'}">${lesson.quiz.title}</h2>
+                                <p class="text-sm text-gray-400">${isUnlocked ? (quizTaken ? `Score: ${userProgress.quizScores[lesson.id]}%` : 'Click to take quiz') : 'Complete previous lesson to unlock'}</p>
+                            </div>
+                            ${quizTaken ? `<div class="ml-4 ${userProgress.quizScores[lesson.id] >= 70 ? 'text-green-400' : 'text-red-400'}"><i class="fas fa-${userProgress.quizScores[lesson.id] >= 70 ? 'check' : 'times'}-circle text-xl"></i></div>` : ''}
+                        </div>
+                    `;
+                    
+                    container.appendChild(quizCard);
+                });
+            }
+            
+            // View a single quiz
+            function viewQuiz(lessonId) {
+                const lesson = courseData.lessons.find(l => l.id === lessonId);
+                if (!lesson) return;
+                
+                document.getElementById('quiz-title').textContent = lesson.quiz.title;
+                
+                const quizContainer = document.getElementById('quiz-container');
+                const quizResults = document.getElementById('quiz-results');
+                
+                quizContainer.innerHTML = '';
+                quizResults.classList.add('hidden');
+                
+                // Check if quiz was already taken
+                const quizTaken = userProgress.quizScores.hasOwnProperty(lessonId);
+                
+                if (quizTaken) {
+                    // Show results if quiz was already taken
+                    showQuizResults(lessonId);
+                } else {
+                    // Show quiz questions if not taken
+                    lesson.quiz.questions.forEach((question, qIndex) => {
+                        const questionElement = document.createElement('div');
+                        questionElement.className = 'mb-8';
+                        questionElement.innerHTML = `
+                            <h3 class="text-lg font-semibold mb-4">${qIndex + 1}. ${question.question}</h3>
+                            <div class="space-y-3">
+                                ${question.options.map((option, oIndex) => `
+                                    <div class="quiz-option bg-gray-700 hover:bg-gray-600 p-3 rounded-lg cursor-pointer" data-question="${qIndex}" data-option="${oIndex}">
+                                        ${option}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        quizContainer.appendChild(questionElement);
+                    });
+                    
+                    // Add submit button
+                    const submitBtn = document.createElement('button');
+                    submitBtn.className = 'bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition duration-200 w-full mt-6';
+                    submitBtn.textContent = 'Submit Quiz';
+                    submitBtn.addEventListener('click', () => submitQuiz(lessonId));
+                    quizContainer.appendChild(submitBtn);
+                }
+                
+                // Show single quiz view
+                document.getElementById('quizzes').classList.add('hidden');
+                document.getElementById('single-quiz').classList.remove('hidden');
+            }
+            
+            // Submit quiz and calculate score
+            function submitQuiz(lessonId) {
+                const lesson = courseData.lessons.find(l => l.id === lessonId);
+                if (!lesson) return;
+                
+                const selectedOptions = [];
+                const optionElements = document.querySelectorAll('.quiz-option');
+                
+                optionElements.forEach(option => {
+                    if (option.classList.contains('selected')) {
+                        const questionIndex = parseInt(option.getAttribute('data-question'));
+                        const optionIndex = parseInt(option.getAttribute('data-option'));
+                        selectedOptions[questionIndex] = optionIndex;
+                    }
+                });
+                
+                // Check if all questions were answered
+                if (selectedOptions.length !== lesson.quiz.questions.length) {
+                    alert('Please answer all questions before submitting.');
+                    return;
+                }
+                
+                // Calculate score
+                let correctAnswers = 0;
+                const feedback = [];
+                
+                lesson.quiz.questions.forEach((question, index) => {
+                    if (selectedOptions[index] === question.answer) {
+                        correctAnswers++;
+                        feedback.push({
+                            question: question.question,
+                            correct: true,
+                            userAnswer: question.options[selectedOptions[index]],
+                            correctAnswer: question.options[question.answer]
+                        });
+                    } else {
+                        feedback.push({
+                            question: question.question,
+                            correct: false,
+                            userAnswer: question.options[selectedOptions[index]],
+                            correctAnswer: question.options[question.answer]
+                        });
+                    }
+                });
+                
+                const score = Math.round((correctAnswers / lesson.quiz.questions.length) * 100);
+                
+                // Save quiz results
+                userProgress.quizScores[lessonId] = score;
+                saveProgress();
+                
+                // Show results
+                showQuizResults(lessonId, feedback, score);
+            }
+            
+            // Show quiz results
+            function showQuizResults(lessonId, feedback, score) {
+                const lesson = courseData.lessons.find(l => l.id === lessonId);
+                if (!lesson) return;
+                
+                const quizContainer = document.getElementById('quiz-container');
+                const quizResults = document.getElementById('quiz-results');
+                const quizScore = document.getElementById('quiz-score');
+                const quizProgress = document.getElementById('quiz-progress');
+                const quizFeedback = document.getElementById('quiz-feedback');
+                const nextLessonBtn = document.getElementById('next-lesson');
+                
+                quizContainer.innerHTML = '';
+                quizResults.classList.remove('hidden');
+                
+                // Set score
+                const displayScore = score || userProgress.quizScores[lessonId];
+                quizScore.textContent = `${displayScore}%`;
+                quizProgress.style.width = `${displayScore}%`;
+                
+                // Set feedback if available
+                if (feedback) {
+                    quizFeedback.innerHTML = '<h3 class="font-semibold mb-3">Question Feedback:</h3>';
+                    
+                    feedback.forEach((item, index) => {
+                        const feedbackItem = document.createElement('div');
+                        feedbackItem.className = `mb-4 p-3 rounded-lg ${item.correct ? 'bg-green-900' : 'bg-red-900'}`;
+                        feedbackItem.innerHTML = `
+                            <div class="flex items-start mb-1">
+                                <span class="font-medium mr-2">${index + 1}.</span>
+                                <span>${item.question}</span>
+                            </div>
+                            <div class="text-sm ${item.correct ? 'text-green-300' : 'text-red-300'}">
+                                ${item.correct ? 
+                                    `<i class="fas fa-check mr-1"></i> Your answer was correct: "${item.userAnswer}"` : 
+                                    `<i class="fas fa-times mr-1"></i> Your answer: "${item.userAnswer}"<br>
+                                    <i class="fas fa-check mr-1"></i> Correct answer: "${item.correctAnswer}"`}
+                            </div>
+                        `;
+                        quizFeedback.appendChild(feedbackItem);
+                    });
+                }
+                
+                // Set up next lesson button
+                if (lessonId < courseData.lessons.length) {
+                    nextLessonBtn.textContent = `Go to Lesson ${lessonId + 1}`;
+                    nextLessonBtn.onclick = function() {
+                        viewLesson(lessonId + 1);
+                    };
+                } else {
+                    nextLessonBtn.textContent = 'View Final Test';
+                    nextLessonBtn.onclick = function() {
+                        document.getElementById('single-quiz').classList.add('hidden');
+                        document.getElementById('final-test').classList.remove('hidden');
+                        document.querySelector('[data-section="final-test"]').classList.add('active');
+                        document.querySelector('[data-section="quizzes"]').classList.remove('active');
+                    };
+                }
+            }
+            
+            // Back to quizzes button
+            document.getElementById('back-to-quizzes').addEventListener('click', function() {
+                document.getElementById('single-quiz').classList.add('hidden');
+                document.getElementById('quizzes').classList.remove('hidden');
+                loadQuizzes();
+            });
+            
+            // Retake quiz button
+            document.getElementById('retake-quiz').addEventListener('click', function() {
+                const quizTitle = document.getElementById('quiz-title').textContent;
+                const lessonId = courseData.lessons.findIndex(l => l.quiz.title === quizTitle) + 1;
+                viewQuiz(lessonId);
+            });
+            
+            // Final test start button
+            document.getElementById('start-final-test').addEventListener('click', function() {
+                document.getElementById('final-test-intro').classList.add('hidden');
+                document.getElementById('final-test-container').classList.remove('hidden');
+                
+                const testContainer = document.getElementById('final-test-container');
+                testContainer.innerHTML = '';
+                
+                // Shuffle questions
+                const shuffledQuestions = [...courseData.finalTest.questions].sort(() => 0.5 - Math.random());
+                
+                // Display questions
+                shuffledQuestions.forEach((question, qIndex) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'mb-8';
+                    questionElement.innerHTML = `
+                        <h3 class="text-lg font-semibold mb-4">${qIndex + 1}. ${question.question}</h3>
+                        <div class="space-y-3">
+                            ${question.options.map((option, oIndex) => `
+                                <div class="quiz-option bg-gray-700 hover:bg-gray-600 p-3 rounded-lg cursor-pointer" data-question="${qIndex}" data-option="${oIndex}">
+                                    ${option}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    testContainer.appendChild(questionElement);
+                });
+                
+                // Add submit button
+                const submitBtn = document.createElement('button');
+                submitBtn.className = 'bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition duration-200 w-full mt-6';
+                submitBtn.textContent = 'Submit Final Test';
+                submitBtn.addEventListener('click', submitFinalTest);
+                testContainer.appendChild(submitBtn);
+            });
+            
+            // Submit final test
+            function submitFinalTest() {
+                const selectedOptions = [];
+                const optionElements = document.querySelectorAll('#final-test-container .quiz-option');
+                
+                optionElements.forEach(option => {
+                    if (option.classList.contains('selected')) {
+                        const questionIndex = parseInt(option.getAttribute('data-question'));
+                        const optionIndex = parseInt(option.getAttribute('data-option'));
+                        selectedOptions[questionIndex] = optionIndex;
+                    }
+                });
+                
+                // Check if all questions were answered
+                if (selectedOptions.length !== courseData.finalTest.questions.length) {
+                    alert('Please answer all questions before submitting.');
+                    return;
+                }
+                
+                // Calculate score
+                let correctAnswers = 0;
+                const feedback = [];
+                
+                // Map selected options back to original question order
+                const shuffledQuestions = [...courseData.finalTest.questions].sort(() => 0.5 - Math.random());
+                
+                shuffledQuestions.forEach((question, index) => {
+                    if (selectedOptions[index] === question.answer) {
+                        correctAnswers++;
+                        feedback.push({
+                            question: question.question,
+                            correct: true,
+                            userAnswer: question.options[selectedOptions[index]],
+                            correctAnswer: question.options[question.answer],
+                            lesson: question.lesson
+                        });
+                    } else {
+                        feedback.push({
+                            question: question.question,
+                            correct: false,
+                            userAnswer: question.options[selectedOptions[index]],
+                            correctAnswer: question.options[question.answer],
+                            lesson: question.lesson
+                        });
+                    }
+                });
+                
+                const score = Math.round((correctAnswers / courseData.finalTest.questions.length) * 100);
+                const passed = score >= courseData.finalTest.passingScore;
+                
+                // Save final test results
+                userProgress.finalTest = {
+                    taken: true,
+                    score: score,
+                    passed: passed
+                };
+                saveProgress();
+                
+                // Show results
+                showFinalTestResults(feedback, score, passed);
+            }
+            
+            // Show final test results
+            function showFinalTestResults(feedback, score, passed) {
+                document.getElementById('final-test-container').classList.add('hidden');
+                document.getElementById('final-test-results').classList.remove('hidden');
+                
+                const scoreContainer = document.getElementById('final-test-score-container');
+                const feedbackContainer = document.getElementById('final-test-feedback');
+                
+                scoreContainer.innerHTML = `
+                    <div class="flex flex-col md:flex-row items-center justify-between mb-6 p-4 ${passed ? 'bg-green-900' : 'bg-red-900'} rounded-lg">
+                        <div class="text-2xl font-bold mb-2 md:mb-0">
+                            Your Score: <span class="${passed ? 'text-green-300' : 'text-red-300'}">${score}%</span>
+                        </div>
+                        <div class="text-xl font-semibold">
+                            ${passed ? 
+                                '<i class="fas fa-check-circle text-green-300 mr-2"></i> Congratulations! You passed!' : 
+                                '<i class="fas fa-times-circle text-red-300 mr-2"></i> Try again to pass!'}
+                        </div>
+                    </div>
+                `;
+                
+                feedbackContainer.innerHTML = '<h3 class="text-xl font-semibold mb-4">Question Feedback:</h3>';
+                
+                feedback.forEach((item, index) => {
+                    const lessonTitle = courseData.lessons.find(l => l.id === item.lesson)?.title || 'General';
+                    
+                    const feedbackItem = document.createElement('div');
+                    feedbackItem.className = `mb-4 p-3 rounded-lg ${item.correct ? 'bg-green-900' : 'bg-red-900'}`;
+                    feedbackItem.innerHTML = `
+                        <div class="flex flex-wrap items-start mb-1">
+                            <span class="font-medium mr-2">${index + 1}.</span>
+                            <span>${item.question}</span>
+                        </div>
+                        <div class="text-xs text-gray-400 mb-2">From: ${lessonTitle}</div>
+                        <div class="text-sm ${item.correct ? 'text-green-300' : 'text-red-300'}">
+                            ${item.correct ? 
+                                `<i class="fas fa-check mr-1"></i> Your answer was correct: "${item.userAnswer}"` : 
+                                `<i class="fas fa-times mr-1"></i> Your answer: "${item.userAnswer}"<br>
+                                <i class="fas fa-check mr-1"></i> Correct answer: "${item.correctAnswer}"`}
+                        </div>
+                    `;
+                    feedbackContainer.appendChild(feedbackItem);
+                });
+                
+                // Scroll to results
+                document.getElementById('final-test-results').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Retake final test button
+            document.getElementById('retake-final-test').addEventListener('click', function() {
+                document.getElementById('final-test-results').classList.add('hidden');
+                document.getElementById('final-test-intro').classList.remove('hidden');
+            });
+            
+            // View certificate button
+            document.getElementById('view-certificate').addEventListener('click', function() {
+                alert('Certificate would be generated here with your name and course completion details!');
+            });
+            
+            // Handle quiz option selection
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('quiz-option') || e.target.closest('.quiz-option')) {
+                    const option = e.target.classList.contains('quiz-option') ? e.target : e.target.closest('.quiz-option');
+                    const questionIndex = option.getAttribute('data-question');
+                    const optionIndex = option.getAttribute('data-option');
+                    
+                    // Remove selected class from all options in this question
+                    const allOptions = document.querySelectorAll(`.quiz-option[data-question="${questionIndex}"]`);
+                    allOptions.forEach(opt => {
+                        opt.classList.remove('selected', 'bg-blue-600');
+                    });
+                    
+                    // Add selected class to clicked option
+                    option.classList.add('selected', 'bg-blue-600');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
