@@ -49,18 +49,19 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Validate code
 app.post('/validate-code', (req, res) => {
   const { code } = req.body;
   const records = fs.readJSONSync(DATA_FILE);
-  const now = Date.now();
-  const rec = records.find(r => r.code === code && r.expires > now);
+  const now     = Date.now();
+  const rec     = records.find(r => r.code === code && r.expires > now);
+
   if (rec) {
-    return res.json({ ok: true, subject: rec.subject, plan: rec.plan });
+    return res.json({ ok: true, course: rec.course });
   } else {
     return res.json({ ok: false });
   }
 });
+
 
 // AI Chat (Premium)
 app.post('/api-chat', async (req, res) => {
